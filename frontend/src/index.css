@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Admin panel: sodda, ochiq rang */
+  .admin-input {
+    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900
+      focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900
+      disabled:bg-gray-100 disabled:text-gray-500;
+  }
+  .admin-label {
+    @apply mb-1 block text-sm font-medium text-gray-700;
+  }
+  .admin-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white
+      hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .admin-btn-ikkinchi {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700
+      hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .admin-btn-xavfli {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600
+      hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Do'kon: qora va tilla */
+  .dokon-input {
+    @apply w-full border border-qora-3 bg-qora-2 px-4 py-3 text-sm text-white placeholder-gray-500
+      focus:border-oltin focus:outline-none;
+  }
+  .dokon-btn {
+    @apply inline-flex w-full items-center justify-center bg-oltin px-6 py-3 text-sm font-semibold uppercase tracking-widest text-qora
+      transition hover:bg-oltin-och disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
