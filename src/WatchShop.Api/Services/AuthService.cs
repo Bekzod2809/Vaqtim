@@ -32,6 +32,10 @@ public class AuthService : IAuthService
     {
         RoyxatdanOtishValidator.Tekshir(dto);
 
+        // PostgreSQL "Bekzod" va "bekzod" ni har xil deb biladi, shuning uchun hammasini kichik harfda saqlaymiz
+        dto.Username = Kichik(dto.Username);
+        dto.Email = Kichik(dto.Email);
+
         var usernameBand = await FoydalanuvchiRepository.GetAllQuery()
             .AnyAsync(f => f.Username == dto.Username);
 
@@ -60,8 +64,10 @@ public class AuthService : IAuthService
     {
         KirishValidator.Tekshir(dto);
 
+        var kiritilgan = Kichik(dto.UsernameYokiEmail);
+
         var foydalanuvchi = await FoydalanuvchiRepository.GetAllQuery()
-            .FirstOrDefaultAsync(f => f.Username == dto.UsernameYokiEmail || f.Email == dto.UsernameYokiEmail);
+            .FirstOrDefaultAsync(f => f.Username == kiritilgan || f.Email == kiritilgan);
 
         // Qaysi biri xato ekanini aytmaymiz: begona odam username mavjudligini bilib olmasin
         if (foydalanuvchi == null || !ParolHasher.Verify(dto.Parol, foydalanuvchi.ParolHash))
@@ -74,5 +80,10 @@ public class AuthService : IAuthService
             Token = TokenService.GetToken(foydalanuvchi),
             Foydalanuvchi = foydalanuvchi.ToGetDto()
         };
+    }
+
+    private static string Kichik(string matn)
+    {
+        return matn.Trim().ToLowerInvariant();
     }
 }

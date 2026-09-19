@@ -1,4 +1,5 @@
 export const DOKON_NOMI = 'Vaqtim';
+export const SHIOR = "Soat do'koni";
 
 // Backenddagi Kategoriya enum bilan mos keladi. "yol" — admin endpointidagi qism: /api/mahsulotlar/soatlar
 export const KATEGORIYA = {

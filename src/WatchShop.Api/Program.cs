@@ -34,7 +34,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    // EnableRetryOnFailure: serverda baza konteyneri API'dan kechroq tayyor bo'lsa, ulanish qayta urinib ko'riladi
+    options.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure());
 });
 
 builder.AddJwtAuthentication();
@@ -52,6 +53,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<MahsulotYozishDtoValidator>
 
 var app = builder.Build();
 
+// Dastur ishga tushganda baza oxirgi migration holatiga keltiriladi: serverda qo'lda buyruq bajarish shart emas
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+}
+
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -60,11 +67,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Development'da frontend Vite proxy orqali HTTP (5277) bilan ulanadi, shuning uchun HTTPS'ga yo'naltirmaymiz
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+// HTTPS'ni bu yerda emas, serverdagi Nginx boshqaradi (sertifikat va http -> https yo'naltirish o'sha yerda).
+// Development'da esa frontend Vite proxy orqali oddiy HTTP (5277) bilan ulanadi.
 
 // wwwroot ichidagi fayllarni (rasmlarni) brauzerga berish uchun
 app.UseStaticFiles();

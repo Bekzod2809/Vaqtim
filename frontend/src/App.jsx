@@ -4,7 +4,10 @@ import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import DokonLayout from './components/DokonLayout';
 import AdminLayout from './components/AdminLayout';
-import BoshSahifa from './pages/BoshSahifa';
+import KatalogPage from './pages/KatalogPage';
+import MahsulotPage from './pages/MahsulotPage';
+import SavatPage from './pages/SavatPage';
+import BuyurtmalarimPage from './pages/BuyurtmalarimPage';
 import KirishPage from './pages/KirishPage';
 import RoyxatdanOtishPage from './pages/RoyxatdanOtishPage';
 import MahsulotlarPage from './pages/admin/MahsulotlarPage';
@@ -20,9 +23,16 @@ export default function App() {
           <Routes>
             {/* Do'kon: qora-tilla dizayn */}
             <Route element={<DokonLayout />}>
-              <Route path="/" element={<BoshSahifa />} />
+              <Route path="/" element={<KatalogPage />} />
+              <Route path="/mahsulot/:id" element={<MahsulotPage />} />
               <Route path="/kirish" element={<KirishPage />} />
               <Route path="/royxatdan-otish" element={<RoyxatdanOtishPage />} />
+
+              {/* Savat va buyurtmalar faqat kirgan foydalanuvchi uchun */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/savat" element={<SavatPage />} />
+                <Route path="/buyurtmalarim" element={<BuyurtmalarimPage />} />
+              </Route>
             </Route>
 
             {/* Admin panel: faqat Admin roli bilan */}

@@ -85,6 +85,13 @@ export default function MahsulotFormPage() {
   const saqlash = async (e) => {
     e.preventDefault();
     setXatolar({});
+
+    // Bo'sh qolsa 0 bo'lib ketadi va mahsulot saytda ko'rinmay qoladi, shuning uchun aniq kiritilishi shart
+    if (forma.ombordagiSoni === '') {
+      setXatolar({ ombordagiSoni: 'Ombordagi sonini kiriting.' });
+      return;
+    }
+
     setSaqlanmoqda(true);
 
     let mahsulotId = id;

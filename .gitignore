@@ -65,6 +65,9 @@ ehthumbs.db
 secrets.json
 appsettings.*.local.json
 
+# Logo dizayn fayli (eksport). Ilova uni ishlatmaydi: logo frontend/src/components/Logo.jsx va favicon.svg da
+Vaqtim*Logo.html
+
 # Admin yuklagan rasmlar (papkaning o'zi qoladi, ichidagi fayllar git'ga tushmaydi)
 src/WatchShop.Api/wwwroot/rasmlar/*
 !src/WatchShop.Api/wwwroot/rasmlar/.gitkeep

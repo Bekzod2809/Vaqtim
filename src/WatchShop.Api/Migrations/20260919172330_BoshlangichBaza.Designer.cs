@@ -2,9 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WatchShop.Api.Data;
 
 #nullable disable
@@ -12,8 +12,8 @@ using WatchShop.Api.Data;
 namespace WatchShop.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260918121243_SavatBuyurtmaVaOmbor")]
-    partial class SavatBuyurtmaVaOmbor
+    [Migration("20260919172330_BoshlangichBaza")]
+    partial class BoshlangichBaza
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,9 +21,9 @@ namespace WatchShop.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "10.0.12")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("WatchShop.Api.Entities.Buyurtma", b =>
                 {
@@ -31,30 +31,30 @@ namespace WatchShop.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BuyurtmaId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("BuyurtmaId"));
 
                     b.Property<long>("FoydalanuvchiId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Holati")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("JamiSumma")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<string>("Telefon")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTime>("YaratilganVaqt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("YetkazishManzili")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("BuyurtmaId");
 
@@ -69,7 +69,7 @@ namespace WatchShop.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BuyurtmaMahsulotiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("BuyurtmaMahsulotiId"));
 
                     b.Property<long>("BuyurtmaId")
                         .HasColumnType("bigint");
@@ -80,14 +80,14 @@ namespace WatchShop.Api.Migrations
                     b.Property<string>("MahsulotNomi")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("character varying(150)");
 
                     b.Property<decimal>("Narxi")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<int>("Soni")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("BuyurtmaMahsulotiId");
 
@@ -104,35 +104,35 @@ namespace WatchShop.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("FoydalanuvchiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("FoydalanuvchiId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("Familiya")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Ism")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ParolHash")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int>("Rol")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("FoydalanuvchiId");
 
@@ -151,41 +151,41 @@ namespace WatchShop.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MahsulotId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("MahsulotId"));
 
                     b.Property<string>("Brendi")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<decimal?>("ChegirmaNarxi")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<int>("Kategoriya")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Narxi")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<string>("Nomi")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("character varying(150)");
 
                     b.Property<int>("OmbordagiSoni")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Rangi")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Tavsifi")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("character varying(2000)");
 
                     b.HasKey("MahsulotId");
 
@@ -204,10 +204,10 @@ namespace WatchShop.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MahsulotRasmiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("MahsulotRasmiId"));
 
                     b.Property<bool>("AsosiyRasmmi")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<long>("MahsulotId")
                         .HasColumnType("bigint");
@@ -215,7 +215,7 @@ namespace WatchShop.Api.Migrations
                     b.Property<string>("RasmHavolasi")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.HasKey("MahsulotRasmiId");
 
@@ -230,7 +230,7 @@ namespace WatchShop.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SavatMahsulotiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SavatMahsulotiId"));
 
                     b.Property<long>("FoydalanuvchiId")
                         .HasColumnType("bigint");
@@ -239,7 +239,7 @@ namespace WatchShop.Api.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<int>("Soni")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("SavatMahsulotiId");
 
@@ -263,7 +263,7 @@ namespace WatchShop.Api.Migrations
                     b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
 
                     b.Property<int>("Turi")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue(3);
                 });
@@ -280,7 +280,7 @@ namespace WatchShop.Api.Migrations
                     b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
 
                     b.Property<int>("Mexanizmi")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue(1);
                 });

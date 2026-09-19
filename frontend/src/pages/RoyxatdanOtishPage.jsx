@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { LogoBelgi } from '../components/Logo';
 import { maydonXatolari } from '../utils';
 
 const MAYDONLAR = [
@@ -43,39 +44,44 @@ export default function RoyxatdanOtishPage() {
   };
 
   return (
-    <section className="mx-auto max-w-md px-4 py-16">
-      <h1 className="mb-2 text-center font-serif text-4xl font-semibold text-white">Ro'yxatdan o'tish</h1>
-      <p className="mb-10 text-center text-sm text-gray-500">Yangi hisob yarating</p>
+    <section className="relative px-4 py-16">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(199,165,96,0.12),transparent_55%)]" />
 
-      <form onSubmit={yuborish} className="space-y-5">
-        {MAYDONLAR.map((m) => (
-          <div key={m.nomi}>
-            <input
-              name={m.nomi}
-              type={m.type ?? 'text'}
-              value={forma[m.nomi]}
-              onChange={ozgartirish}
-              placeholder={m.placeholder}
-              autoComplete={m.autoComplete}
-              className="dokon-input"
-            />
-            {xatolar[m.nomi] && <p className="mt-1 text-xs text-red-400">{xatolar[m.nomi]}</p>}
-          </div>
-        ))}
+      <div className="relative mx-auto max-w-md animate-paydo border border-qora-3 bg-qora-2/60 p-8 backdrop-blur-sm md:p-10">
+        <LogoBelgi jonli className="mx-auto mb-6 h-16 w-16" />
+        <h1 className="mb-2 text-center font-serif text-4xl font-semibold text-krem">Ro'yxatdan o'tish</h1>
+        <p className="mb-10 text-center text-sm text-gray-500">Yangi hisob yarating</p>
 
-        {xato && !Object.keys(xatolar).length && <p className="text-sm text-red-400">{xato}</p>}
+        <form onSubmit={yuborish} className="space-y-5">
+          {MAYDONLAR.map((m) => (
+            <div key={m.nomi}>
+              <input
+                name={m.nomi}
+                type={m.type ?? 'text'}
+                value={forma[m.nomi]}
+                onChange={ozgartirish}
+                placeholder={m.placeholder}
+                autoComplete={m.autoComplete}
+                className="dokon-input"
+              />
+              {xatolar[m.nomi] && <p className="mt-1 text-xs text-red-400">{xatolar[m.nomi]}</p>}
+            </div>
+          ))}
 
-        <button type="submit" disabled={yuklanmoqda} className="dokon-btn">
-          {yuklanmoqda ? 'Yuborilmoqda...' : "Ro'yxatdan o'tish"}
-        </button>
-      </form>
+          {xato && !Object.keys(xatolar).length && <p className="text-sm text-red-400">{xato}</p>}
 
-      <p className="mt-8 text-center text-sm text-gray-500">
-        Hisobingiz bormi?{' '}
-        <Link to="/kirish" className="text-oltin hover:text-oltin-och">
-          Kirish
-        </Link>
-      </p>
+          <button type="submit" disabled={yuklanmoqda} className="dokon-btn">
+            {yuklanmoqda ? 'Yuborilmoqda...' : "Ro'yxatdan o'tish"}
+          </button>
+        </form>
+
+        <p className="mt-8 text-center text-sm text-gray-500">
+          Hisobingiz bormi?{' '}
+          <Link to="/kirish" className="text-oltin hover:text-oltin-och">
+            Kirish
+          </Link>
+        </p>
+      </div>
     </section>
   );
 }

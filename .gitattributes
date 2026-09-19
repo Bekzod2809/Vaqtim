@@ -1,0 +1,2 @@
+# Shell skriptlar Linux serverda ishlaydi: Windows'dagi CRLF qator oxiri ularni buzadi
+*.sh text eol=lf

@@ -108,7 +108,7 @@ export default function MahsulotlarPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-gray-600">{KATEGORIYA[m.kategoriya]?.birlik}</td>
-                  <td className="px-4 py-3">
+                  <td className="whitespace-nowrap px-4 py-3">
                     {m.chegirmaNarxi ? (
                       <>
                         <p className="font-medium text-red-600">{formatNarx(m.chegirmaNarxi)}</p>
@@ -118,7 +118,7 @@ export default function MahsulotlarPage() {
                       <p className="font-medium">{formatNarx(m.narxi)}</p>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="whitespace-nowrap px-4 py-3">
                     {m.ombordagiSoni > 0 ? (
                       <span>{m.ombordagiSoni} ta</span>
                     ) : (

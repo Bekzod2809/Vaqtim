@@ -14,14 +14,16 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={korsat}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
         {xabarlar.map((x) => (
           <div
             key={x.id}
-            className={`max-w-sm rounded-md px-4 py-3 text-sm text-white shadow-lg ${
-              x.turi === 'xato' ? 'bg-red-600' : 'bg-gray-900'
+            role="status"
+            className={`flex max-w-sm animate-toast items-center gap-3 border-l-2 bg-qora-2 px-5 py-4 text-sm text-krem shadow-2xl shadow-black/50 ${
+              x.turi === 'xato' ? 'border-red-500' : 'border-oltin'
             }`}
           >
+            <span className={x.turi === 'xato' ? 'text-red-400' : 'text-oltin'}>{x.turi === 'xato' ? '!' : '✓'}</span>
             {x.matn}
           </div>
         ))}
