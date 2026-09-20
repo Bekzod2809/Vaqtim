@@ -2,7 +2,7 @@
 // unda "1" ni o'chirib bo'lmasdi, "3" yozsa "13" bo'lardi va ombordan ko'p son kiritsa bo'lardi.
 export default function SonTanlagich({ soni, kamaytirish, oshirish, min = 1, max = Infinity, disabled = false, katta = false }) {
   const tugma = `text-gray-400 transition hover:bg-qora-3 hover:text-oltin disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 ${
-    katta ? 'px-4 text-lg' : 'px-3 py-1.5'
+    katta ? 'px-5 text-xl sm:px-4 sm:text-lg' : 'px-3.5 py-2.5 text-base sm:px-3 sm:py-1.5 sm:text-sm'
   }`;
 
   return (
@@ -11,7 +11,7 @@ export default function SonTanlagich({ soni, kamaytirish, oshirish, min = 1, max
         −
       </button>
       <span
-        className={`flex items-center justify-center tabular-nums text-krem ${katta ? 'w-12 text-base' : 'w-9 text-sm'}`}
+        className={`flex select-none items-center justify-center tabular-nums text-krem ${katta ? 'w-12 text-base' : 'w-9 text-sm'}`}
         aria-live="polite"
       >
         {soni}

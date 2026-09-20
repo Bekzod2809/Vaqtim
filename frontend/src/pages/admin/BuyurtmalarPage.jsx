@@ -51,14 +51,14 @@ export default function BuyurtmalarPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-semibold">Buyurtmalar</h1>
+      <h1 className="mb-6 text-xl font-semibold sm:text-2xl">Buyurtmalar</h1>
 
       {yuklanmoqda && <p className="text-gray-500">Yuklanmoqda...</p>}
       {!yuklanmoqda && buyurtmalar.length === 0 && <p className="text-gray-500">Hali buyurtma yo'q.</p>}
 
       <div className="space-y-4">
         {buyurtmalar.map((b) => (
-          <div key={b.buyurtmaId} className="rounded-lg border border-gray-200 bg-white p-5">
+          <div key={b.buyurtmaId} className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-3">
@@ -70,7 +70,7 @@ export default function BuyurtmalarPage() {
                 <p className="mt-1 text-sm text-gray-500">{formatSana(b.yaratilganVaqt)}</p>
               </div>
 
-              <div className="text-right text-sm">
+              <div className="min-w-0 break-words text-sm sm:text-right">
                 <p className="font-medium">{b.telefon}</p>
                 <p className="text-gray-500">{b.yetkazishManzili}</p>
               </div>
@@ -78,11 +78,11 @@ export default function BuyurtmalarPage() {
 
             <ul className="my-4 divide-y divide-gray-100 border-y border-gray-100 text-sm">
               {b.mahsulotlari.map((m, i) => (
-                <li key={i} className="flex justify-between py-2">
+                <li key={i} className="flex justify-between gap-3 py-2">
                   <span>
                     {m.mahsulotNomi} <span className="text-gray-500">× {m.soni}</span>
                   </span>
-                  <span>{formatNarx(m.summa)}</span>
+                  <span className="whitespace-nowrap">{formatNarx(m.summa)}</span>
                 </li>
               ))}
             </ul>
@@ -90,12 +90,12 @@ export default function BuyurtmalarPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-semibold">Jami: {formatNarx(b.jamiSumma)}</p>
 
-              <div className="flex gap-2">
+              <div className="flex w-full gap-2 sm:w-auto">
                 {(KEYINGI_HOLATLAR[b.holati] ?? []).map((k) => (
                   <button
                     key={k.holat}
                     onClick={() => holatniOzgartirish(b, k.holat)}
-                    className={k.holat === 4 ? 'admin-btn-xavfli' : 'admin-btn px-3 py-1.5'}
+                    className={`flex-1 sm:flex-none ${k.holat === 4 ? 'admin-btn-xavfli' : 'admin-btn px-3 py-1.5'}`}
                   >
                     {k.matn}
                   </button>

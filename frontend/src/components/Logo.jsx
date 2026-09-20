@@ -46,11 +46,15 @@ export function LogoBelgi({ och = true, jonli = false, className = 'h-10 w-10' }
 // Belgi + "Vaqtim" yozuvi (+ ixtiyoriy shior)
 export function LogoToliq({ shior = false, className = '' }) {
   return (
-    <span className={`group inline-flex items-center gap-3 ${className}`}>
+    <span className={`group inline-flex items-center gap-2.5 sm:gap-3 ${className}`}>
       <LogoBelgi className="h-9 w-9 shrink-0 md:h-10 md:w-10" />
-      <span className="flex flex-col leading-none">
-        <span className="font-serif text-2xl font-semibold tracking-wide text-krem md:text-[1.7rem]">{DOKON_NOMI}</span>
-        {shior && <span className="mt-1 text-[0.6rem] uppercase tracking-[0.35em] text-oltin">{SHIOR}</span>}
+      <span className="flex min-w-0 flex-col leading-none">
+        <span className="font-serif text-[1.4rem] font-semibold tracking-wide text-krem sm:text-2xl md:text-[1.7rem]">{DOKON_NOMI}</span>
+        {shior && (
+          <span className="mt-1 truncate text-[0.55rem] uppercase tracking-[0.25em] text-oltin sm:text-[0.6rem] sm:tracking-[0.35em]">
+            {SHIOR}
+          </span>
+        )}
       </span>
     </span>
   );

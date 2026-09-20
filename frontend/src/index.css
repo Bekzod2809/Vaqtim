@@ -5,6 +5,17 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Telefonni yon tomonga burganda matn kattalashib ketmasligi uchun */
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    /* Tasodifan keng chiqqan element butun sahifani yonga surib yubormasligi uchun */
+    overflow-x: hidden;
+  }
+  /* Teginganda ko'k kvadrat chaqnamasin */
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
   }
   ::selection {
     background: #c7a560;
@@ -64,7 +75,7 @@
 @layer components {
   /* Admin panel: sodda, ochiq rang */
   .admin-input {
-    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition
+    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-base text-gray-900 transition sm:py-2 sm:text-sm
       focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900
       disabled:bg-gray-100 disabled:text-gray-500;
   }
@@ -72,31 +83,31 @@
     @apply mb-1 block text-sm font-medium text-gray-700;
   }
   .admin-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md bg-qora-2 px-4 py-2 text-sm font-medium text-krem transition
+    @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md bg-qora-2 px-4 py-2 text-sm font-medium text-krem transition
       hover:bg-qora-3 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .admin-btn-ikkinchi {
-    @apply inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition
+    @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition
       hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .admin-btn-xavfli {
-    @apply inline-flex items-center justify-center gap-2 rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 transition
+    @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 transition
       hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   /* Do'kon: iliq qora, krem va tilla. Tugma va inputlarda 6px (rounded-md) burchak — logodagi yumaloq kvadratga mos */
   .dokon-input {
-    @apply w-full rounded-md border border-qora-3 bg-qora-2 px-4 py-3 text-sm text-krem placeholder-gray-500 transition duration-300
+    @apply w-full rounded-md border border-qora-3 bg-qora-2 px-4 py-3 text-base text-krem placeholder-gray-500 transition duration-300 sm:text-sm
       focus:border-oltin focus:bg-qora focus:outline-none focus:ring-1 focus:ring-oltin/40;
   }
   /* Katta tugmalarda hover oddiy: faqat rang almashadi */
   .dokon-btn {
-    @apply inline-flex w-full items-center justify-center rounded-md bg-oltin px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-qora transition-colors duration-200
+    @apply inline-flex min-h-[3rem] w-full items-center justify-center rounded-md bg-oltin px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-qora transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
       hover:bg-oltin-och active:scale-[0.98]
       disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-oltin;
   }
   .dokon-btn-chiziqli {
-    @apply inline-flex items-center justify-center rounded-md border border-oltin px-6 py-3 text-sm uppercase tracking-[0.2em] text-oltin transition-colors duration-200
+    @apply inline-flex min-h-[2.75rem] items-center justify-center rounded-md border border-oltin px-5 py-3 text-sm uppercase tracking-[0.12em] text-oltin transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
       hover:bg-oltin hover:text-qora active:scale-[0.98];
   }
 
@@ -117,6 +128,23 @@
   }
   .menu-havola.active {
     @apply text-oltin after:scale-x-100;
+  }
+  /* Telefon menyusidagi havolalar: barmoq uchun keng va baland qator */
+  .menu-havola-telefon {
+    @apply block w-full py-2 text-base;
+  }
+  /* Telefon menyusida tagidagi chiziq butun kenglikka cho'zilib ketmasligi uchun o'chiriladi */
+  .menu-havola-telefon::after {
+    display: none;
+  }
+
+  /* Yonga suriladigan qator (bo'limlar, rasm miniatyuralari): scrollbar ko'rinmaydi */
+  .yon-lenta {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .yon-lenta::-webkit-scrollbar {
+    display: none;
   }
 }
 

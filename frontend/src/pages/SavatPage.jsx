@@ -70,7 +70,7 @@ export default function SavatPage() {
 
   if (!savat) {
     return (
-      <section className="mx-auto max-w-6xl space-y-4 px-4 py-12">
+      <section className="mx-auto max-w-6xl space-y-4 px-4 py-8 md:py-12">
         <div className="skelet h-12 w-48" />
         <div className="skelet h-28 w-full" />
         <div className="skelet h-28 w-full" />
@@ -80,9 +80,9 @@ export default function SavatPage() {
 
   if (savat.mahsulotlar.length === 0) {
     return (
-      <section className="animate-paydo py-28 text-center">
+      <section className="animate-paydo px-4 py-20 text-center md:py-28">
         <LogoBelgi className="mx-auto h-20 w-20 opacity-30" />
-        <h1 className="mt-6 font-serif text-4xl text-krem">Savat bo'sh</h1>
+        <h1 className="mt-6 font-serif text-3xl text-krem sm:text-4xl">Savat bo'sh</h1>
         <p className="mt-3 text-gray-500">Katalogdan o'zingizga yoqqan mahsulotni tanlang.</p>
         <Link to="/" className="dokon-btn-chiziqli mt-10">
           Katalogga o'tish
@@ -95,14 +95,14 @@ export default function SavatPage() {
   const yetarliEmas = savat.mahsulotlar.some((q) => !q.ombordaYetarli);
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12">
-      <h1 className="mb-10 animate-paydo font-serif text-5xl font-semibold text-krem">Savat</h1>
+    <section className="mx-auto max-w-6xl px-4 py-8 md:py-12">
+      <h1 className="mb-7 animate-paydo font-serif text-3xl font-semibold text-krem sm:text-4xl md:mb-10 md:text-5xl">Savat</h1>
 
-      <div className="grid gap-10 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3 lg:gap-10">
         <ul className="divide-y divide-qora-3 border-y border-qora-3 lg:col-span-2">
           {savat.mahsulotlar.map((q, i) => (
-            <li key={q.savatMahsulotiId} className="flex animate-paydo gap-5 py-6" style={{ animationDelay: `${i * 80}ms` }}>
-              <Link to={`/mahsulot/${q.mahsulotId}`} className="group h-28 w-28 shrink-0 overflow-hidden bg-qora-2 ring-1 ring-qora-3">
+            <li key={q.savatMahsulotiId} className="flex animate-paydo gap-4 py-5 sm:gap-5 sm:py-6" style={{ animationDelay: `${i * 80}ms` }}>
+              <Link to={`/mahsulot/${q.mahsulotId}`} className="group h-24 w-24 shrink-0 overflow-hidden bg-qora-2 ring-1 ring-qora-3 sm:h-28 sm:w-28">
                 {q.asosiyRasmHavolasi && (
                   <img
                     src={q.asosiyRasmHavolasi}
@@ -112,16 +112,16 @@ export default function SavatPage() {
                 )}
               </Link>
 
-              <div className="flex flex-1 flex-col justify-between">
-                <div className="flex justify-between gap-4">
-                  <div>
-                    <Link to={`/mahsulot/${q.mahsulotId}`} className="font-serif text-2xl text-krem transition hover:text-oltin">
+              <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
+                <div className="flex justify-between gap-3 sm:gap-4">
+                  <div className="min-w-0">
+                    <Link to={`/mahsulot/${q.mahsulotId}`} className="font-serif text-lg leading-snug text-krem transition hover:text-oltin sm:text-2xl">
                       {q.nomi}
                     </Link>
-                    <p className="mt-1 text-sm text-gray-500">{formatNarx(q.narxi)}</p>
-                    {!q.ombordaYetarli && <p className="mt-1 text-sm text-red-400">Omborda yetarli emas</p>}
+                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">{formatNarx(q.narxi)}</p>
+                    {!q.ombordaYetarli && <p className="mt-1 text-xs text-red-400 sm:text-sm">Omborda yetarli emas</p>}
                   </div>
-                  <p className="whitespace-nowrap text-krem">{formatNarx(q.summa)}</p>
+                  <p className="whitespace-nowrap text-sm text-krem sm:text-base">{formatNarx(q.summa)}</p>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -130,7 +130,7 @@ export default function SavatPage() {
                     kamaytirish={() => soniniOzgartirish(q, q.soni - 1)}
                     oshirish={() => soniniOzgartirish(q, q.soni + 1)}
                   />
-                  <button onClick={() => ochirish(q)} className="text-sm text-gray-500 transition hover:text-red-400">
+                  <button onClick={() => ochirish(q)} className="-mr-2 px-2 py-2 text-sm text-gray-500 transition hover:text-red-400">
                     O'chirish
                   </button>
                 </div>
@@ -141,14 +141,14 @@ export default function SavatPage() {
 
         <form
           onSubmit={buyurtmaBerish}
-          className="h-fit animate-paydo space-y-5 border border-qora-3 bg-qora-2 p-7 lg:sticky lg:top-28"
+          className="h-fit animate-paydo space-y-5 border border-qora-3 bg-qora-2 p-5 sm:p-7 lg:sticky lg:top-28"
           style={{ animationDelay: '150ms' }}
         >
           <p className="text-xs uppercase tracking-[0.3em] text-oltin">Buyurtma</p>
 
           <div className="flex items-baseline justify-between border-b border-qora-3 pb-5">
             <span className="text-gray-400">Jami</span>
-            <span className="font-serif text-3xl text-oltin">{formatNarx(savat.jamiSumma)}</span>
+            <span className="font-serif text-2xl text-oltin sm:text-3xl">{formatNarx(savat.jamiSumma)}</span>
           </div>
 
           <div>
@@ -167,6 +167,9 @@ export default function SavatPage() {
               value={forma.telefon}
               onChange={(e) => setForma({ ...forma, telefon: e.target.value })}
               placeholder="+998901234567"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               className="dokon-input"
             />
             {xatolar.telefon && <p className="mt-1 text-xs text-red-400">{xatolar.telefon}</p>}

@@ -32,7 +32,9 @@ export default function MahsulotKarta({ mahsulot: m, tartib = 0 }) {
         </span>
 
         {chegirmaFoizi > 0 && (
-          <span className="absolute left-3 top-3 bg-oltin px-2.5 py-1 text-xs font-semibold text-qora">−{chegirmaFoizi}%</span>
+          <span className="absolute left-2 top-2 bg-oltin px-2 py-0.5 text-[0.7rem] font-semibold text-qora sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-xs">
+            −{chegirmaFoizi}%
+          </span>
         )}
 
         {/* Oddiy xaridorga tugagan mahsulot umuman kelmaydi, bu belgini faqat admin ko'radi */}
@@ -43,20 +45,20 @@ export default function MahsulotKarta({ mahsulot: m, tartib = 0 }) {
         )}
       </div>
 
-      <div className="pt-4">
-        <p className="text-[0.7rem] uppercase tracking-[0.25em] text-oltin">{m.brendi}</p>
-        <h3 className="mt-1 font-serif text-xl leading-snug text-krem transition-colors duration-300 group-hover:text-oltin-och">
+      <div className="pt-3 sm:pt-4">
+        <p className="truncate text-[0.65rem] uppercase tracking-[0.2em] text-oltin sm:text-[0.7rem] sm:tracking-[0.25em]">{m.brendi}</p>
+        <h3 className="mt-1 font-serif text-lg leading-snug text-krem transition-colors duration-300 group-hover:text-oltin-och sm:text-xl">
           {m.nomi}
         </h3>
 
-        <div className="mt-2 flex flex-wrap items-baseline gap-x-3">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 sm:gap-x-3">
           {m.chegirmaNarxi ? (
             <>
-              <span className="font-medium text-oltin">{formatNarx(m.chegirmaNarxi)}</span>
-              <span className="text-sm text-gray-500 line-through">{formatNarx(m.narxi)}</span>
+              <span className="text-sm font-medium text-oltin sm:text-base">{formatNarx(m.chegirmaNarxi)}</span>
+              <span className="text-xs text-gray-500 line-through sm:text-sm">{formatNarx(m.narxi)}</span>
             </>
           ) : (
-            <span className="font-medium text-gray-200">{formatNarx(m.narxi)}</span>
+            <span className="text-sm font-medium text-gray-200 sm:text-base">{formatNarx(m.narxi)}</span>
           )}
         </div>
       </div>

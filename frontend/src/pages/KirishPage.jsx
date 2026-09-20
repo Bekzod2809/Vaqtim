@@ -36,13 +36,13 @@ export default function KirishPage() {
   };
 
   return (
-    <section className="relative px-4 py-16">
+    <section className="relative px-4 py-10 sm:py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(199,165,96,0.12),transparent_55%)]" />
 
-      <div className="relative mx-auto max-w-md animate-paydo border border-qora-3 bg-qora-2/60 p-8 backdrop-blur-sm md:p-10">
-        <LogoBelgi jonli className="mx-auto mb-6 h-16 w-16" />
-        <h1 className="mb-2 text-center font-serif text-4xl font-semibold text-krem">Kirish</h1>
-        <p className="mb-10 text-center text-sm text-gray-500">Hisobingizga kiring</p>
+      <div className="relative mx-auto max-w-md animate-paydo border border-qora-3 bg-qora-2/60 p-6 backdrop-blur-sm sm:p-8 md:p-10">
+        <LogoBelgi jonli className="mx-auto mb-5 h-14 w-14 sm:mb-6 sm:h-16 sm:w-16" />
+        <h1 className="mb-2 text-center font-serif text-3xl font-semibold text-krem sm:text-4xl">Kirish</h1>
+        <p className="mb-8 text-center text-sm text-gray-500 sm:mb-10">Hisobingizga kiring</p>
 
         <form onSubmit={yuborish} className="space-y-5">
           <div>
@@ -77,7 +77,7 @@ export default function KirishPage() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-gray-500">
+        <p className="mt-7 text-center text-sm text-gray-500 sm:mt-8">
           Hisobingiz yo'qmi?{' '}
           <Link to="/royxatdan-otish" className="text-oltin hover:text-oltin-och">
             Ro'yxatdan o'ting

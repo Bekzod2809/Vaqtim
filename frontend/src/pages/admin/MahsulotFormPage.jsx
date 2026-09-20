@@ -147,9 +147,9 @@ export default function MahsulotFormPage() {
       <Link to="/admin/mahsulotlar" className="text-sm text-gray-500 hover:text-gray-900">
         ← Mahsulotlar
       </Link>
-      <h1 className="mb-6 mt-2 text-2xl font-semibold">{tahrirlash ? 'Mahsulotni tahrirlash' : 'Yangi mahsulot'}</h1>
+      <h1 className="mb-6 mt-2 text-xl font-semibold sm:text-2xl">{tahrirlash ? 'Mahsulotni tahrirlash' : 'Yangi mahsulot'}</h1>
 
-      <form onSubmit={saqlash} className="space-y-6 rounded-lg border border-gray-200 bg-white p-6">
+      <form onSubmit={saqlash} className="space-y-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <div>
           <label className="admin-label">Kategoriya</label>
           <select
@@ -228,7 +228,7 @@ export default function MahsulotFormPage() {
           {rasmlar.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-3">
               {rasmlar.map((r) => (
-                <div key={r.mahsulotRasmiId} className="relative h-24 w-24 overflow-hidden rounded border border-gray-200">
+                <div key={r.mahsulotRasmiId} className="relative h-20 w-20 overflow-hidden rounded border border-gray-200 sm:h-24 sm:w-24">
                   <img src={r.rasmHavolasi} alt="" className="h-full w-full object-cover" />
                   {r.asosiyRasmmi && (
                     <span className="absolute left-1 top-1 rounded bg-gray-900 px-1.5 py-0.5 text-[10px] text-white">Asosiy</span>
@@ -236,7 +236,7 @@ export default function MahsulotFormPage() {
                   <button
                     type="button"
                     onClick={() => rasmniOchirish(r)}
-                    className="absolute right-1 top-1 rounded bg-white/90 px-1.5 text-xs text-red-600 hover:bg-white"
+                    className="absolute right-1 top-1 rounded bg-white/90 px-2 py-1 text-xs leading-none text-red-600 hover:bg-white"
                   >
                     ✕
                   </button>
@@ -264,11 +264,11 @@ export default function MahsulotFormPage() {
           )}
         </div>
 
-        <div className="flex gap-3 border-t border-gray-100 pt-5">
-          <button type="submit" disabled={saqlanmoqda} className="admin-btn">
+        <div className="flex flex-col gap-3 border-t border-gray-100 pt-5 sm:flex-row">
+          <button type="submit" disabled={saqlanmoqda} className="admin-btn w-full sm:w-auto">
             {saqlanmoqda ? 'Saqlanmoqda...' : 'Saqlash'}
           </button>
-          <Link to="/admin/mahsulotlar" className="admin-btn-ikkinchi">
+          <Link to="/admin/mahsulotlar" className="admin-btn-ikkinchi w-full sm:w-auto">
             Bekor qilish
           </Link>
         </div>
@@ -281,7 +281,14 @@ function Maydon({ nomi, label, type = 'text', forma, ozgartirish, xatolar }) {
   return (
     <div>
       <label className="admin-label">{label}</label>
-      <input name={nomi} type={type} value={forma[nomi]} onChange={ozgartirish} className="admin-input" />
+      <input
+        name={nomi}
+        type={type}
+        inputMode={type === 'number' ? 'numeric' : undefined}
+        value={forma[nomi]}
+        onChange={ozgartirish}
+        className="admin-input"
+      />
       {xatolar[nomi] && <p className="mt-1 text-xs text-red-600">{xatolar[nomi]}</p>}
     </div>
   );

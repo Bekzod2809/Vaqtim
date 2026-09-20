@@ -64,7 +64,7 @@ export default function MahsulotPage() {
 
   if (!m) {
     return (
-      <section className="mx-auto grid max-w-6xl gap-12 px-4 py-12 md:grid-cols-2">
+      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-8 md:grid-cols-2 md:gap-12 md:py-12">
         <div className="skelet aspect-square" />
         <div className="space-y-4 pt-4">
           <div className="skelet h-3 w-20" />
@@ -79,12 +79,12 @@ export default function MahsulotPage() {
   const tugagan = m.ombordagiSoni === 0;
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-10">
-      <Link to="/" className="group inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-oltin">
+    <section className="mx-auto max-w-6xl px-4 py-6 md:py-10">
+      <Link to="/" className="group -ml-1 inline-flex items-center gap-2 py-2 pl-1 pr-2 text-sm text-gray-500 transition hover:text-oltin">
         <span className="transition-transform duration-300 group-hover:-translate-x-1">←</span> Katalog
       </Link>
 
-      <div className="mt-8 grid gap-12 md:grid-cols-2">
+      <div className="mt-4 grid gap-8 md:mt-8 md:grid-cols-2 md:gap-12">
         <div className="animate-paydo">
           <div className="aspect-square overflow-hidden bg-qora-2 ring-1 ring-qora-3">
             {tanlanganRasm ? (
@@ -96,12 +96,12 @@ export default function MahsulotPage() {
           </div>
 
           {m.rasmlari.length > 1 && (
-            <div className="mt-4 flex gap-3">
+            <div className="yon-lenta -mx-4 mt-4 flex gap-3 overflow-x-auto px-4 sm:mx-0 sm:px-0">
               {m.rasmlari.map((r) => (
                 <button
                   key={r.mahsulotRasmiId}
                   onClick={() => setTanlanganRasm(r.rasmHavolasi)}
-                  className={`h-20 w-20 overflow-hidden ring-1 transition duration-300 ${
+                  className={`h-16 w-16 shrink-0 overflow-hidden ring-1 transition duration-300 sm:h-20 sm:w-20 ${
                     tanlanganRasm === r.rasmHavolasi ? 'ring-oltin' : 'opacity-60 ring-qora-3 hover:opacity-100'
                   }`}
                 >
@@ -113,25 +113,28 @@ export default function MahsulotPage() {
         </div>
 
         <div className="md:sticky md:top-28 md:self-start">
-          <p className="animate-paydo text-xs uppercase tracking-[0.3em] text-oltin" style={{ animationDelay: '100ms' }}>
+          <p
+            className="animate-paydo text-[0.65rem] uppercase tracking-[0.25em] text-oltin sm:text-xs sm:tracking-[0.3em]"
+            style={{ animationDelay: '100ms' }}
+          >
             {m.brendi}
           </p>
-          <h1 className="mt-3 animate-paydo font-serif text-4xl font-semibold leading-tight text-krem md:text-5xl" style={{ animationDelay: '180ms' }}>
+          <h1 className="mt-3 animate-paydo font-serif text-3xl font-semibold leading-tight text-krem sm:text-4xl md:text-5xl" style={{ animationDelay: '180ms' }}>
             {m.nomi}
           </h1>
 
-          <div className="mt-6 flex animate-paydo flex-wrap items-baseline gap-x-4" style={{ animationDelay: '260ms' }}>
+          <div className="mt-5 flex animate-paydo flex-wrap items-baseline gap-x-3 gap-y-1 sm:mt-6 sm:gap-x-4" style={{ animationDelay: '260ms' }}>
             {m.chegirmaNarxi ? (
               <>
-                <span className="text-3xl text-oltin">{formatNarx(m.chegirmaNarxi)}</span>
+                <span className="text-2xl text-oltin sm:text-3xl">{formatNarx(m.chegirmaNarxi)}</span>
                 <span className="text-gray-500 line-through">{formatNarx(m.narxi)}</span>
               </>
             ) : (
-              <span className="text-3xl text-krem">{formatNarx(m.narxi)}</span>
+              <span className="text-2xl text-krem sm:text-3xl">{formatNarx(m.narxi)}</span>
             )}
           </div>
 
-          <dl className="mt-10 animate-paydo divide-y divide-qora-3 border-y border-qora-3 text-sm" style={{ animationDelay: '340ms' }}>
+          <dl className="mt-8 animate-paydo divide-y divide-qora-3 border-y border-qora-3 text-sm sm:mt-10" style={{ animationDelay: '340ms' }}>
             <Xususiyat nomi="Kategoriya" qiymat={KATEGORIYA[m.kategoriya]?.birlik} />
             <Xususiyat nomi="Rangi" qiymat={m.rangi} />
             {m.mexanizmi && <Xususiyat nomi="Mexanizm" qiymat={MEXANIZM[m.mexanizmi]} />}
@@ -140,12 +143,12 @@ export default function MahsulotPage() {
           </dl>
 
           {m.tavsifi && (
-            <p className="mt-8 animate-paydo whitespace-pre-line leading-relaxed text-gray-400" style={{ animationDelay: '420ms' }}>
+            <p className="mt-6 animate-paydo whitespace-pre-line text-sm leading-relaxed text-gray-400 sm:mt-8 sm:text-base" style={{ animationDelay: '420ms' }}>
               {m.tavsifi}
             </p>
           )}
 
-          <div className="mt-10 flex animate-paydo gap-3" style={{ animationDelay: '500ms' }}>
+          <div className="mt-8 grid animate-paydo grid-cols-[auto_1fr] gap-3 sm:mt-10" style={{ animationDelay: '500ms' }}>
             <SonTanlagich
               katta
               soni={soni}
@@ -172,9 +175,9 @@ export default function MahsulotPage() {
 
 function Xususiyat({ nomi, qiymat }) {
   return (
-    <div className="flex justify-between py-3.5">
-      <dt className="text-gray-500">{nomi}</dt>
-      <dd className="text-krem">{qiymat}</dd>
+    <div className="flex justify-between gap-4 py-3.5">
+      <dt className="shrink-0 text-gray-500">{nomi}</dt>
+      <dd className="text-right text-krem">{qiymat}</dd>
     </div>
   );
 }

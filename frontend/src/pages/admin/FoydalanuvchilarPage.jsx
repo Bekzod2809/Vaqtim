@@ -42,10 +42,10 @@ export default function FoydalanuvchilarPage() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-semibold">Foydalanuvchilar</h1>
+      <h1 className="mb-2 text-xl font-semibold sm:text-2xl">Foydalanuvchilar</h1>
       <p className="mb-6 text-sm text-gray-500">Rol o'zgarishi foydalanuvchi qayta kirganda kuchga kiradi.</p>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <div className="hidden overflow-x-auto rounded-lg border border-gray-200 bg-white md:block">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500">
             <tr>
@@ -100,6 +100,45 @@ export default function FoydalanuvchilarPage() {
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Telefon: jadval o'rniga kartalar */}
+      <div className="space-y-3 md:hidden">
+        {yuklanmoqda && <p className="py-8 text-center text-gray-500">Yuklanmoqda...</p>}
+
+        {foydalanuvchilar.map((f) => {
+          const ozim = f.foydalanuvchiId === men.foydalanuvchiId;
+
+          return (
+            <div key={f.foydalanuvchiId} className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    {f.ism} {f.familiya}
+                  </p>
+                  <p className="mt-0.5 truncate text-sm text-gray-600">{f.username}</p>
+                  <p className="truncate text-sm text-gray-500">{f.email}</p>
+                </div>
+
+                <span
+                  className={`shrink-0 rounded px-2 py-0.5 text-xs font-medium ${
+                    f.rol === 2 ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  {ROL[f.rol]}
+                </span>
+              </div>
+
+              <button
+                onClick={() => rolniOzgartirish(f)}
+                disabled={ozim}
+                className="admin-btn-ikkinchi mt-3 w-full disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {ozim ? "O'z rolingizni o'zgartira olmaysiz" : f.rol === 2 ? 'User qilish' : 'Admin qilish'}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { LogoBelgi, LogoToliq } from './Logo';
 import { DOKON_NOMI, KATEGORIYA, SHIOR } from '../constants';
 
-const menuUslubi = ({ isActive }) => `menu-havola ${isActive ? 'active' : ''}`;
+const menuUslubi = (qoshimcha) => ({ isActive }) => `menu-havola ${qoshimcha} ${isActive ? 'active' : ''}`;
 
 export default function DokonLayout() {
   const { foydalanuvchi, adminmi, chiqish } = useAuth();
@@ -32,80 +32,88 @@ export default function DokonLayout() {
     navigate('/');
   };
 
-  const havolalar = (
-    <>
-      <NavLink to="/" end className={menuUslubi}>
-        Katalog
-      </NavLink>
+  // telefonda = true bo'lsa havolalar butun kenglikni egallaydi (barmoq uchun qulay)
+  const havolalar = (telefonda = false) => {
+    const q = telefonda ? 'menu-havola-telefon' : '';
 
-      {foydalanuvchi ? (
-        <>
-          <NavLink to="/savat" className={menuUslubi}>
-            Savat
-          </NavLink>
-          <NavLink to="/buyurtmalarim" className={menuUslubi}>
-            Buyurtmalarim
-          </NavLink>
-          {adminmi && (
-            <Link to="/admin" className="menu-havola text-oltin">
-              Admin panel
+    return (
+      <>
+        <NavLink to="/" end className={menuUslubi(q)}>
+          Katalog
+        </NavLink>
+
+        {foydalanuvchi ? (
+          <>
+            <NavLink to="/savat" className={menuUslubi(q)}>
+              Savat
+            </NavLink>
+            <NavLink to="/buyurtmalarim" className={menuUslubi(q)}>
+              Buyurtmalarim
+            </NavLink>
+            {adminmi && (
+              <Link to="/admin" className={`menu-havola text-oltin ${q}`}>
+                Admin panel
+              </Link>
+            )}
+            <button onClick={chiqishniBosish} className={`menu-havola text-left ${q}`}>
+              Chiqish
+            </button>
+          </>
+        ) : (
+          <>
+            <NavLink to="/kirish" className={menuUslubi(q)}>
+              Kirish
+            </NavLink>
+            <Link
+              to="/royxatdan-otish"
+              className={`dokon-btn-chiziqli text-xs ${telefonda ? 'mt-2 w-full' : 'min-h-0 px-5 py-2'}`}
+            >
+              Ro'yxatdan o'tish
             </Link>
-          )}
-          <button onClick={chiqishniBosish} className="menu-havola text-left">
-            Chiqish
-          </button>
-        </>
-      ) : (
-        <>
-          <NavLink to="/kirish" className={menuUslubi}>
-            Kirish
-          </NavLink>
-          <Link to="/royxatdan-otish" className="dokon-btn-chiziqli px-5 py-2 text-xs">
-            Ro'yxatdan o'tish
-          </Link>
-        </>
-      )}
-    </>
-  );
+          </>
+        )}
+      </>
+    );
+  };
 
   return (
-    <div className="flex min-h-screen flex-col bg-qora font-sans text-gray-300">
+    <div className="flex min-h-[100dvh] flex-col bg-qora font-sans text-gray-300">
       <header
         className={`sticky top-0 z-40 border-b transition-all duration-500 ${
           aylantirildi || menyuOchiq ? 'border-qora-3 bg-qora/85 backdrop-blur-md' : 'border-transparent bg-transparent'
         }`}
       >
         <div
-          className={`mx-auto flex max-w-6xl items-center justify-between px-4 transition-all duration-500 ${
-            aylantirildi ? 'py-3' : 'py-5'
+          className={`mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 transition-all duration-500 ${
+            aylantirildi ? 'py-3' : 'py-4 md:py-5'
           }`}
         >
-          <Link to="/" aria-label={DOKON_NOMI}>
+          <Link to="/" aria-label={DOKON_NOMI} className="min-w-0">
             <LogoToliq shior />
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex">
             {foydalanuvchi && <span className="text-sm text-gray-500">{foydalanuvchi.ism}</span>}
-            {havolalar}
+            {havolalar()}
           </nav>
 
           {/* Telefon menyusi tugmasi: uch chiziq ochilganda "X" ga aylanadi */}
           <button
             onClick={() => setMenyuOchiq(!menyuOchiq)}
-            className="relative h-10 w-10 md:hidden"
+            className="relative -mr-2 h-11 w-11 shrink-0 md:hidden"
             aria-label="Menyu"
             aria-expanded={menyuOchiq}
           >
-            <span className={`absolute left-2 right-2 h-px bg-krem transition-all duration-300 ${menyuOchiq ? 'top-5 rotate-45' : 'top-3.5'}`} />
-            <span className={`absolute left-2 right-2 top-5 h-px bg-krem transition-opacity duration-300 ${menyuOchiq ? 'opacity-0' : ''}`} />
-            <span className={`absolute left-2 right-2 h-px bg-krem transition-all duration-300 ${menyuOchiq ? 'top-5 -rotate-45' : 'top-[1.625rem]'}`} />
+            <span className={`absolute left-3 right-3 h-px bg-krem transition-all duration-300 ${menyuOchiq ? 'top-[1.375rem] rotate-45' : 'top-4'}`} />
+            <span className={`absolute left-3 right-3 top-[1.375rem] h-px bg-krem transition-opacity duration-300 ${menyuOchiq ? 'opacity-0' : ''}`} />
+            <span className={`absolute left-3 right-3 h-px bg-krem transition-all duration-300 ${menyuOchiq ? 'top-[1.375rem] -rotate-45' : 'top-[1.75rem]'}`} />
           </button>
         </div>
 
         {menyuOchiq && (
-          <nav className="flex animate-tushish flex-col items-start gap-5 border-t border-qora-3 px-4 py-6 md:hidden">
-            {foydalanuvchi && <span className="text-sm text-gray-500">{foydalanuvchi.ism}</span>}
-            {havolalar}
+          <nav className="flex max-h-[70dvh] animate-tushish flex-col items-start gap-1 overflow-y-auto border-t border-qora-3 px-4 py-4 md:hidden">
+            {foydalanuvchi && <span className="py-2 text-sm text-gray-500">{foydalanuvchi.ism}</span>}
+            {havolalar(true)}
           </nav>
         )}
       </header>
@@ -116,7 +124,7 @@ export default function DokonLayout() {
       </main>
 
       <footer className="mt-20 border-t border-qora-3">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-3 md:py-14">
           <div>
             <div className="flex items-center gap-3">
               <LogoBelgi className="h-12 w-12" />
@@ -135,7 +143,7 @@ export default function DokonLayout() {
             <ul className="space-y-2 text-sm">
               {Object.entries(KATEGORIYA).map(([kod, k]) => (
                 <li key={kod}>
-                  <Link to={`/?bolim=${kod}`} className="text-gray-400 transition hover:text-krem">
+                  <Link to={`/?bolim=${kod}`} className="inline-block py-1 text-gray-400 transition hover:text-krem">
                     {k.nomi}
                   </Link>
                 </li>
@@ -147,17 +155,17 @@ export default function DokonLayout() {
             <p className="mb-4 text-xs uppercase tracking-[0.3em] text-oltin">Xaridorlar uchun</p>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/?bolim=chegirmalar" className="text-gray-400 transition hover:text-krem">
+                <Link to="/?bolim=chegirmalar" className="inline-block py-1 text-gray-400 transition hover:text-krem">
                   Chegirmalar
                 </Link>
               </li>
               <li>
-                <Link to="/savat" className="text-gray-400 transition hover:text-krem">
+                <Link to="/savat" className="inline-block py-1 text-gray-400 transition hover:text-krem">
                   Savat
                 </Link>
               </li>
               <li>
-                <Link to="/buyurtmalarim" className="text-gray-400 transition hover:text-krem">
+                <Link to="/buyurtmalarim" className="inline-block py-1 text-gray-400 transition hover:text-krem">
                   Buyurtmalarim
                 </Link>
               </li>
