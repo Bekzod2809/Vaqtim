@@ -61,19 +61,21 @@ jobs:
       - name: SSH sozlash
         run: |
           mkdir -p ~/.ssh
-          # tr -d '\r': Windows'da nusxalangan kalitda qator oxiri belgilari bo'lishi mumkin,
-          # ular bilan ssh kalitni o'qiy olmaydi ("error in libcrypto")
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          # Kalit secret'da base64 bo'lib turadi: nusxalanganda qator oxirlari va probellar buzilmaydi
+          # (xom matnda saqlanganda ssh kalitni o'qiy olmagan edi: "error in libcrypto")
+          echo "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" | tr -d '\r' > ~/.ssh/known_hosts
-          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null && echo "Kalit o'qildi"
+          # Kalit yaroqsiz bo'lsa aynan shu yerda to'xtaymiz, keyingi qadamda emas
+          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null
+          echo "Kalit o'qildi"
 
       # Serverdagi deploy kaliti faqat /opt/vaqtim/deploy.sh ni ishga tushira oladi:
       # arxiv shu skriptga yuboriladi, u backend'ni build qilib, frontend'ni almashtiradi
       - name: Serverga yuborish
         run: |
           tar -czf - --exclude=bin --exclude=obj --exclude='*.user' src/WatchShop.Api deploy dist \
-            | ssh -i ~/.ssh/deploy_key -o BatchMode=yes root@${{ secrets.SERVER_HOST }}
+            | ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes root@${{ secrets.SERVER_HOST }}
 
       - name: Saytni tekshirish
         run: curl -sf --retry 5 --retry-delay 3 https://vaqtim.bekzodxasanov.uz/api/mahsulotlar > /dev/null
