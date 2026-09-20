@@ -13,7 +13,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql/data
-    # Port tashqariga ochilmaydi: bazaga faqat shu compose ichidagi api ulanadi
+    ports:
+      # Faqat serverning o'zidan ko'rinadi (internetdan emas). pgAdmin bunga SSH tunnel orqali ulanadi
+      - "127.0.0.1:5432:5432"
 
   api:
     build: ../src/WatchShop.Api

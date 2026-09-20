@@ -61,9 +61,12 @@ jobs:
       - name: SSH sozlash
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          # tr -d '\r': Windows'da nusxalangan kalitda qator oxiri belgilari bo'lishi mumkin,
+          # ular bilan ssh kalitni o'qiy olmaydi ("error in libcrypto")
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" | tr -d '\r' > ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null && echo "Kalit o'qildi"
 
       # Serverdagi deploy kaliti faqat /opt/vaqtim/deploy.sh ni ishga tushira oladi:
       # arxiv shu skriptga yuboriladi, u backend'ni build qilib, frontend'ni almashtiradi

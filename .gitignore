@@ -71,3 +71,6 @@ Vaqtim*Logo.html
 # Admin yuklagan rasmlar (papkaning o'zi qoladi, ichidagi fayllar git'ga tushmaydi)
 src/WatchShop.Api/wwwroot/rasmlar/*
 !src/WatchShop.Api/wwwroot/rasmlar/.gitkeep
+
+# pgAdmin ulanish sozlamalari (shaxsiy: server IP va kalit yo'li)
+pgadmin-servers.json
