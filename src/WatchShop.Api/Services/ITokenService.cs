@@ -4,5 +4,5 @@ namespace WatchShop.Api.Services;
 
 public interface ITokenService
 {
-    string GetToken(Foydalanuvchi foydalanuvchi);
+    string GetToken(User user);
 }

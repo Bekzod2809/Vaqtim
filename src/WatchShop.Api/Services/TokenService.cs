@@ -16,14 +16,14 @@ public class TokenService : ITokenService
         JwtSettings = jwtSettings;
     }
 
-    public string GetToken(Foydalanuvchi foydalanuvchi)
+    public string GetToken(User user)
     {
         var claims = new Claim[]
         {
-            new Claim("FoydalanuvchiId", foydalanuvchi.FoydalanuvchiId.ToString()),
-            new Claim("Username", foydalanuvchi.Username),
-            new Claim(ClaimTypes.Email, foydalanuvchi.Email),
-            new Claim(ClaimTypes.Role, foydalanuvchi.Rol.ToString())
+            new Claim("UserId", user.UserId.ToString()),
+            new Claim("Username", user.Username),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.SecurityKey));

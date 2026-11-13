@@ -2,15 +2,15 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 // Bu faqat qulaylik uchun: sahifani yashiradi. Haqiqiy himoya backendda — [Authorize(Roles = "Admin")]
-export default function ProtectedRoute({ faqatAdmin = false }) {
-  const { foydalanuvchi, adminmi } = useAuth();
+export default function ProtectedRoute({ adminOnly = false }) {
+  const { user, isAdmin } = useAuth();
   const location = useLocation();
 
-  if (!foydalanuvchi) {
-    return <Navigate to="/kirish" state={{ qaytish: location.pathname }} replace />;
+  if (!user) {
+    return <Navigate to="/login" state={{ goBack: location.pathname }} replace />;
   }
 
-  if (faqatAdmin && !adminmi) {
+  if (adminOnly && !isAdmin) {
     return <Navigate to="/" replace />;
   }
 

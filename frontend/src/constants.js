@@ -1,24 +1,24 @@
-export const DOKON_NOMI = 'Vaqtim';
-export const SHIOR = "Soat do'koni";
+export const STORE_NAME = 'Vaqtim';
+export const TAGLINE = "Soat do'koni";
 
 // Backenddagi Kategoriya enum bilan mos keladi. "yol" — admin endpointidagi qism: /api/mahsulotlar/soatlar
-export const KATEGORIYA = {
-  1: { nomi: 'Soatlar', birlik: 'Soat', yol: 'soatlar' },
-  2: { nomi: "Ko'zoynaklar", birlik: "Ko'zoynak", yol: 'kozoynaklar' },
-  3: { nomi: 'Kepkalar', birlik: 'Kepka', yol: 'kepkalar' },
-  4: { nomi: 'Bilaguzuklar', birlik: 'Bilaguzuk', yol: 'bilaguzuklar' },
-  5: { nomi: 'Uzuklar', birlik: 'Uzuk', yol: 'uzuklar' },
+export const CATEGORY = {
+  1: { name: 'Soatlar', singular: 'Soat', path: 'watches' },
+  2: { name: "Ko'zoynaklar", singular: "Ko'zoynak", path: 'glasses' },
+  3: { name: 'Kepkalar', singular: 'Kepka', path: 'caps' },
+  4: { name: 'Bilaguzuklar', singular: 'Bilaguzuk', path: 'bracelets' },
+  5: { name: 'Uzuklar', singular: 'Uzuk', path: 'rings' },
 };
 
 // Backenddagi MexanizmTuri, KepkaTuri, Rol enumlari
-export const MEXANIZM = { 1: 'Mexanik', 2: 'Batareyka' };
-export const KEPKA_TURI = { 1: 'Kundalik', 2: 'Sport' };
-export const ROL = { 1: 'User', 2: 'Admin' };
+export const MOVEMENT = { 1: 'Mexanik', 2: 'Batareyka' };
+export const CAP_TYPE = { 1: 'Kundalik', 2: 'Sport' };
+export const ROLE = { 1: 'User', 2: 'Admin' };
 
 // Backenddagi BuyurtmaHolati enum
-export const BUYURTMA_HOLATI = {
-  1: { nomi: 'Yangi', rang: 'bg-blue-100 text-blue-800' },
-  2: { nomi: 'Tasdiqlangan', rang: 'bg-amber-100 text-amber-800' },
-  3: { nomi: 'Yetkazilgan', rang: 'bg-green-100 text-green-800' },
-  4: { nomi: 'Bekor qilingan', rang: 'bg-gray-200 text-gray-700' },
+export const ORDER_STATUS = {
+  1: { name: 'Yangi', color: 'bg-blue-100 text-blue-800' },
+  2: { name: 'Tasdiqlangan', color: 'bg-amber-100 text-amber-800' },
+  3: { name: 'Yetkazilgan', color: 'bg-green-100 text-green-800' },
+  4: { name: 'Bekor qilingan', color: 'bg-gray-200 text-gray-700' },
 };

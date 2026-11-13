@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const AUTH_KALIT = 'watchshop_auth';
+export const AUTH_KEY = 'watchshop_auth';
 
 // "/api" — Vite proxy uni backendga uzatadi (vite.config.js)
 const client = axios.create({
@@ -9,10 +9,10 @@ const client = axios.create({
 
 // Har bir so'rovga tokenni qo'shamiz
 client.interceptors.request.use((config) => {
-  const saqlangan = localStorage.getItem(AUTH_KALIT);
+  const saved = localStorage.getItem(AUTH_KEY);
 
-  if (saqlangan) {
-    const { token } = JSON.parse(saqlangan);
+  if (saved) {
+    const { token } = JSON.parse(saved);
     config.headers.Authorization = `Bearer ${token}`;
   }
 
@@ -27,9 +27,9 @@ client.interceptors.response.use(
     const data = error.response?.data;
 
     // Token muddati tugagan: saqlangan kirishni o'chirib, kirish sahifasiga yuboramiz
-    if (status === 401 && localStorage.getItem(AUTH_KALIT)) {
-      localStorage.removeItem(AUTH_KALIT);
-      window.location.assign('/kirish');
+    if (status === 401 && localStorage.getItem(AUTH_KEY)) {
+      localStorage.removeItem(AUTH_KEY);
+      window.location.assign('/login');
     }
 
     let message = data?.message || data?.title || "Noma'lum xatolik yuz berdi";

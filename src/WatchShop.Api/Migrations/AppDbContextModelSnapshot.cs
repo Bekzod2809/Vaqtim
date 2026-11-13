@@ -22,108 +22,108 @@ namespace WatchShop.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Buyurtma", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Order", b =>
                 {
-                    b.Property<long>("BuyurtmaId")
+                    b.Property<long>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("BuyurtmaId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrderId"));
 
-                    b.Property<long>("FoydalanuvchiId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Holati")
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("JamiSumma")
+                    b.Property<decimal>("TotalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<string>("Telefon")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<DateTime>("YaratilganVaqt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("YetkazishManzili")
+                    b.Property<string>("DeliveryAddress")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.HasKey("BuyurtmaId");
+                    b.HasKey("OrderId");
 
-                    b.HasIndex("FoydalanuvchiId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Buyurtmalar", (string)null);
+                    b.ToTable("Orders", (string)null);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.BuyurtmaMahsuloti", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.OrderItem", b =>
                 {
-                    b.Property<long>("BuyurtmaMahsulotiId")
+                    b.Property<long>("OrderItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("BuyurtmaMahsulotiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrderItemId"));
 
-                    b.Property<long>("BuyurtmaId")
+                    b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("MahsulotId")
+                    b.Property<long?>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("MahsulotNomi")
+                    b.Property<string>("ProductName")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<decimal>("Narxi")
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<int>("Soni")
+                    b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("BuyurtmaMahsulotiId");
+                    b.HasKey("OrderItemId");
 
-                    b.HasIndex("BuyurtmaId");
+                    b.HasIndex("OrderId");
 
-                    b.HasIndex("MahsulotId");
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("BuyurtmaMahsulotlari", (string)null);
+                    b.ToTable("OrderItems", (string)null);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Foydalanuvchi", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.User", b =>
                 {
-                    b.Property<long>("FoydalanuvchiId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("FoydalanuvchiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("Familiya")
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("Ism")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("ParolHash")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<int>("Rol")
+                    b.Property<int>("Role")
                         .HasColumnType("integer");
 
                     b.Property<string>("Username")
@@ -131,7 +131,7 @@ namespace WatchShop.Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.HasKey("FoydalanuvchiId");
+                    b.HasKey("UserId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -139,223 +139,223 @@ namespace WatchShop.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Foydalanuvchilar", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Mahsulot", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Product", b =>
                 {
-                    b.Property<long>("MahsulotId")
+                    b.Property<long>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("MahsulotId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ProductId"));
 
-                    b.Property<string>("Brendi")
+                    b.Property<string>("Brand")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<decimal?>("ChegirmaNarxi")
+                    b.Property<decimal?>("SalePrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<int>("Kategoriya")
+                    b.Property<int>("Category")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Narxi")
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<string>("Nomi")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("OmbordagiSoni")
+                    b.Property<int>("StockQuantity")
                         .IsConcurrencyToken()
                         .HasColumnType("integer");
 
-                    b.Property<string>("Rangi")
+                    b.Property<string>("Color")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("Tavsifi")
+                    b.Property<string>("Description")
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
-                    b.HasKey("MahsulotId");
+                    b.HasKey("ProductId");
 
-                    b.HasIndex("Kategoriya");
+                    b.HasIndex("Category");
 
-                    b.ToTable("Mahsulotlar", (string)null);
+                    b.ToTable("Products", (string)null);
 
-                    b.HasDiscriminator<int>("Kategoriya");
+                    b.HasDiscriminator<int>("Category");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.MahsulotRasmi", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.ProductImage", b =>
                 {
-                    b.Property<long>("MahsulotRasmiId")
+                    b.Property<long>("ProductImageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("MahsulotRasmiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ProductImageId"));
 
-                    b.Property<bool>("AsosiyRasmmi")
+                    b.Property<bool>("IsMainImage")
                         .HasColumnType("boolean");
 
-                    b.Property<long>("MahsulotId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("RasmHavolasi")
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.HasKey("MahsulotRasmiId");
+                    b.HasKey("ProductImageId");
 
-                    b.HasIndex("MahsulotId");
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("MahsulotRasmlari", (string)null);
+                    b.ToTable("ProductImages", (string)null);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.SavatMahsuloti", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.CartItem", b =>
                 {
-                    b.Property<long>("SavatMahsulotiId")
+                    b.Property<long>("CartItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SavatMahsulotiId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("CartItemId"));
 
-                    b.Property<long>("FoydalanuvchiId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("MahsulotId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Soni")
+                    b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("SavatMahsulotiId");
+                    b.HasKey("CartItemId");
 
-                    b.HasIndex("MahsulotId");
+                    b.HasIndex("ProductId");
 
-                    b.HasIndex("FoydalanuvchiId", "MahsulotId")
+                    b.HasIndex("UserId", "ProductId")
                         .IsUnique();
 
-                    b.ToTable("SavatMahsulotlari", (string)null);
+                    b.ToTable("CartItems", (string)null);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Bilaguzuklar", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Bracelets", b =>
                 {
-                    b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
+                    b.HasBaseType("WatchShop.Api.Entities.Product");
 
                     b.HasDiscriminator().HasValue(4);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Kepkalar", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Caps", b =>
                 {
-                    b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
+                    b.HasBaseType("WatchShop.Api.Entities.Product");
 
-                    b.Property<int>("Turi")
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue(3);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Kozoynaklar", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Glasses", b =>
                 {
-                    b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
+                    b.HasBaseType("WatchShop.Api.Entities.Product");
 
                     b.HasDiscriminator().HasValue(2);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Soatlar", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Watches", b =>
                 {
-                    b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
+                    b.HasBaseType("WatchShop.Api.Entities.Product");
 
-                    b.Property<int>("Mexanizmi")
+                    b.Property<int>("Movement")
                         .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Uzuklar", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Rings", b =>
                 {
-                    b.HasBaseType("WatchShop.Api.Entities.Mahsulot");
+                    b.HasBaseType("WatchShop.Api.Entities.Product");
 
                     b.HasDiscriminator().HasValue(5);
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Buyurtma", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Order", b =>
                 {
-                    b.HasOne("WatchShop.Api.Entities.Foydalanuvchi", "Foydalanuvchi")
+                    b.HasOne("WatchShop.Api.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("FoydalanuvchiId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Foydalanuvchi");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.BuyurtmaMahsuloti", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.OrderItem", b =>
                 {
-                    b.HasOne("WatchShop.Api.Entities.Buyurtma", "Buyurtma")
-                        .WithMany("Mahsulotlari")
-                        .HasForeignKey("BuyurtmaId")
+                    b.HasOne("WatchShop.Api.Entities.Order", "Order")
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WatchShop.Api.Entities.Mahsulot", "Mahsulot")
+                    b.HasOne("WatchShop.Api.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("MahsulotId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Buyurtma");
+                    b.Navigation("Order");
 
-                    b.Navigation("Mahsulot");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.MahsulotRasmi", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.ProductImage", b =>
                 {
-                    b.HasOne("WatchShop.Api.Entities.Mahsulot", "Mahsulot")
-                        .WithMany("Rasmlari")
-                        .HasForeignKey("MahsulotId")
+                    b.HasOne("WatchShop.Api.Entities.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Mahsulot");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.SavatMahsuloti", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.CartItem", b =>
                 {
-                    b.HasOne("WatchShop.Api.Entities.Foydalanuvchi", "Foydalanuvchi")
+                    b.HasOne("WatchShop.Api.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("FoydalanuvchiId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WatchShop.Api.Entities.Mahsulot", "Mahsulot")
+                    b.HasOne("WatchShop.Api.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("MahsulotId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Foydalanuvchi");
+                    b.Navigation("User");
 
-                    b.Navigation("Mahsulot");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Buyurtma", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Order", b =>
                 {
-                    b.Navigation("Mahsulotlari");
+                    b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("WatchShop.Api.Entities.Mahsulot", b =>
+            modelBuilder.Entity("WatchShop.Api.Entities.Product", b =>
                 {
-                    b.Navigation("Rasmlari");
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

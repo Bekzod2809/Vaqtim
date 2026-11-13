@@ -2,18 +2,18 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import DokonLayout from './components/DokonLayout';
+import StoreLayout from './components/StoreLayout';
 import AdminLayout from './components/AdminLayout';
-import KatalogPage from './pages/KatalogPage';
-import MahsulotPage from './pages/MahsulotPage';
-import SavatPage from './pages/SavatPage';
-import BuyurtmalarimPage from './pages/BuyurtmalarimPage';
-import KirishPage from './pages/KirishPage';
-import RoyxatdanOtishPage from './pages/RoyxatdanOtishPage';
-import MahsulotlarPage from './pages/admin/MahsulotlarPage';
-import MahsulotFormPage from './pages/admin/MahsulotFormPage';
-import BuyurtmalarPage from './pages/admin/BuyurtmalarPage';
-import FoydalanuvchilarPage from './pages/admin/FoydalanuvchilarPage';
+import CatalogPage from './pages/CatalogPage';
+import ProductPage from './pages/ProductPage';
+import CartPage from './pages/CartPage';
+import MyOrdersPage from './pages/MyOrdersPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ProductsPage from './pages/admin/ProductsPage';
+import ProductFormPage from './pages/admin/ProductFormPage';
+import OrdersPage from './pages/admin/OrdersPage';
+import UsersPage from './pages/admin/UsersPage';
 
 export default function App() {
   return (
@@ -22,28 +22,28 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             {/* Do'kon: qora-tilla dizayn */}
-            <Route element={<DokonLayout />}>
-              <Route path="/" element={<KatalogPage />} />
-              <Route path="/mahsulot/:id" element={<MahsulotPage />} />
-              <Route path="/kirish" element={<KirishPage />} />
-              <Route path="/royxatdan-otish" element={<RoyxatdanOtishPage />} />
+            <Route element={<StoreLayout />}>
+              <Route path="/" element={<CatalogPage />} />
+              <Route path="/product/:id" element={<ProductPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
               {/* Savat va buyurtmalar faqat kirgan foydalanuvchi uchun */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/savat" element={<SavatPage />} />
-                <Route path="/buyurtmalarim" element={<BuyurtmalarimPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/myOrders" element={<MyOrdersPage />} />
               </Route>
             </Route>
 
             {/* Admin panel: faqat Admin roli bilan */}
-            <Route element={<ProtectedRoute faqatAdmin />}>
+            <Route element={<ProtectedRoute adminOnly />}>
               <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<Navigate to="mahsulotlar" replace />} />
-                <Route path="mahsulotlar" element={<MahsulotlarPage />} />
-                <Route path="mahsulotlar/yangi" element={<MahsulotFormPage />} />
-                <Route path="mahsulotlar/:id" element={<MahsulotFormPage />} />
-                <Route path="buyurtmalar" element={<BuyurtmalarPage />} />
-                <Route path="foydalanuvchilar" element={<FoydalanuvchilarPage />} />
+                <Route index element={<Navigate to="products" replace />} />
+                <Route path="products" element={<ProductsPage />} />
+                <Route path="products/new" element={<ProductFormPage />} />
+                <Route path="products/:id" element={<ProductFormPage />} />
+                <Route path="orders" element={<OrdersPage />} />
+                <Route path="users" element={<UsersPage />} />
               </Route>
             </Route>
 

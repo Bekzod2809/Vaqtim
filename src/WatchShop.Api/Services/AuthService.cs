@@ -11,79 +11,79 @@ namespace WatchShop.Api.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IBaseRepository<Foydalanuvchi> FoydalanuvchiRepository;
+    private readonly IBaseRepository<User> UserRepository;
     private readonly ITokenService TokenService;
-    private readonly IValidator<RoyxatdanOtishDto> RoyxatdanOtishValidator;
-    private readonly IValidator<KirishDto> KirishValidator;
+    private readonly IValidator<RegisterDto> RegisterValidator;
+    private readonly IValidator<LoginDto> LoginValidator;
 
     public AuthService(
-        IBaseRepository<Foydalanuvchi> foydalanuvchiRepository,
+        IBaseRepository<User> userRepository,
         ITokenService tokenService,
-        IValidator<RoyxatdanOtishDto> royxatdanOtishValidator,
-        IValidator<KirishDto> kirishValidator)
+        IValidator<RegisterDto> registerValidator,
+        IValidator<LoginDto> loginValidator)
     {
-        FoydalanuvchiRepository = foydalanuvchiRepository;
+        UserRepository = userRepository;
         TokenService = tokenService;
-        RoyxatdanOtishValidator = royxatdanOtishValidator;
-        KirishValidator = kirishValidator;
+        RegisterValidator = registerValidator;
+        LoginValidator = loginValidator;
     }
 
-    public async Task<long> RegisterAsync(RoyxatdanOtishDto dto)
+    public async Task<long> RegisterAsync(RegisterDto dto)
     {
-        RoyxatdanOtishValidator.Tekshir(dto);
+        RegisterValidator.Validate(dto);
 
         // PostgreSQL "Bekzod" va "bekzod" ni har xil deb biladi, shuning uchun hammasini kichik harfda saqlaymiz
-        dto.Username = Kichik(dto.Username);
-        dto.Email = Kichik(dto.Email);
+        dto.Username = Lowercase(dto.Username);
+        dto.Email = Lowercase(dto.Email);
 
-        var usernameBand = await FoydalanuvchiRepository.GetAllQuery()
+        var usernameTaken = await UserRepository.GetAllQuery()
             .AnyAsync(f => f.Username == dto.Username);
 
-        if (usernameBand)
+        if (usernameTaken)
         {
             throw new BadRequestException("Bu username allaqachon band.");
         }
 
-        var emailBand = await FoydalanuvchiRepository.GetAllQuery()
+        var emailTaken = await UserRepository.GetAllQuery()
             .AnyAsync(f => f.Email == dto.Email);
 
-        if (emailBand)
+        if (emailTaken)
         {
             throw new BadRequestException("Bu email allaqachon ro'yxatdan o'tgan.");
         }
 
-        var foydalanuvchi = dto.ToEntity(ParolHasher.Hash(dto.Parol));
+        var user = dto.ToEntity(PasswordHasher.Hash(dto.Password));
 
-        await FoydalanuvchiRepository.AddAsync(foydalanuvchi);
-        await FoydalanuvchiRepository.SaveChangesAsync();
+        await UserRepository.AddAsync(user);
+        await UserRepository.SaveChangesAsync();
 
-        return foydalanuvchi.FoydalanuvchiId;
+        return user.UserId;
     }
 
-    public async Task<KirishJavobiDto> LoginAsync(KirishDto dto)
+    public async Task<LoginResponseDto> LoginAsync(LoginDto dto)
     {
-        KirishValidator.Tekshir(dto);
+        LoginValidator.Validate(dto);
 
-        var kiritilgan = Kichik(dto.UsernameYokiEmail);
+        var input = Lowercase(dto.UsernameOrEmail);
 
-        var foydalanuvchi = await FoydalanuvchiRepository.GetAllQuery()
-            .FirstOrDefaultAsync(f => f.Username == kiritilgan || f.Email == kiritilgan);
+        var user = await UserRepository.GetAllQuery()
+            .FirstOrDefaultAsync(f => f.Username == input || f.Email == input);
 
         // Qaysi biri xato ekanini aytmaymiz: begona odam username mavjudligini bilib olmasin
-        if (foydalanuvchi == null || !ParolHasher.Verify(dto.Parol, foydalanuvchi.ParolHash))
+        if (user == null || !PasswordHasher.Verify(dto.Password, user.PasswordHash))
         {
             throw new UnauthorizedException("Username/email yoki parol noto'g'ri.");
         }
 
-        return new KirishJavobiDto
+        return new LoginResponseDto
         {
-            Token = TokenService.GetToken(foydalanuvchi),
-            Foydalanuvchi = foydalanuvchi.ToGetDto()
+            Token = TokenService.GetToken(user),
+            User = user.ToGetDto()
         };
     }
 
-    private static string Kichik(string matn)
+    private static string Lowercase(string text)
     {
-        return matn.Trim().ToLowerInvariant();
+        return text.Trim().ToLowerInvariant();
     }
 }

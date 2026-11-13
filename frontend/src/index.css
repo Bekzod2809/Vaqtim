@@ -24,51 +24,51 @@
 }
 
 /* Logo animatsiyasi: siferblat chiziladi, keyin millar aylanib "V" holatiga keladi */
-@keyframes halqa-chizish {
+@keyframes draw-ring {
   from { stroke-dashoffset: 503; }
   to { stroke-dashoffset: 0; }
 }
-@keyframes mil-chapdan {
+@keyframes hand-left {
   from { transform: rotate(-150deg); opacity: 0; }
   to { transform: rotate(0deg); opacity: 1; }
 }
-@keyframes mil-ongdan {
+@keyframes hand-right {
   from { transform: rotate(150deg); opacity: 0; }
   to { transform: rotate(0deg); opacity: 1; }
 }
-@keyframes sekin-paydo {
+@keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-.logo-mil {
+.logo-hand {
   transform-box: view-box;
   transform-origin: 100px 100px;
   transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 /* Jonli soat millari markaz (100, 100) atrofida aylanadi */
-.soat-mil {
+.clock-hand {
   transform-box: view-box;
   transform-origin: 100px 100px;
 }
-.logo-jonli .logo-halqa {
+.logo-animated .logo-ring {
   stroke-dasharray: 503;
-  animation: halqa-chizish 1.4s cubic-bezier(0.6, 0, 0.2, 1) both;
+  animation: draw-ring 1.4s cubic-bezier(0.6, 0, 0.2, 1) both;
 }
-.logo-jonli .logo-belgilar {
-  animation: sekin-paydo 0.8s ease-out 0.9s both;
+.logo-animated .logo-marks {
+  animation: fade-in 0.8s ease-out 0.9s both;
 }
-.logo-jonli .logo-mil-1 {
-  animation: mil-chapdan 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 1s both;
+.logo-animated .logo-hand-1 {
+  animation: hand-left 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 1s both;
 }
-.logo-jonli .logo-mil-2 {
-  animation: mil-ongdan 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 1s both;
+.logo-animated .logo-hand-2 {
+  animation: hand-right 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 1s both;
 }
 /* Sarlavhadagi logo ustiga sichqoncha kelganda millar biroz "yuradi" */
-.group:hover .logo-mil-1 {
+.group:hover .logo-hand-1 {
   transform: rotate(-14deg);
 }
-.group:hover .logo-mil-2 {
+.group:hover .logo-hand-2 {
   transform: rotate(14deg);
 }
 
@@ -83,67 +83,67 @@
     @apply mb-1 block text-sm font-medium text-gray-700;
   }
   .admin-btn {
-    @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md bg-qora-2 px-4 py-2 text-sm font-medium text-krem transition
-      hover:bg-qora-3 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md bg-dark-2 px-4 py-2 text-sm font-medium text-cream transition
+      hover:bg-dark-3 disabled:cursor-not-allowed disabled:opacity-50;
   }
-  .admin-btn-ikkinchi {
+  .admin-btn-secondary {
     @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition
       hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50;
   }
-  .admin-btn-xavfli {
+  .admin-btn-danger {
     @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 transition
       hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  /* Do'kon: iliq qora, krem va tilla. Tugma va inputlarda 6px (rounded-md) burchak — logodagi yumaloq kvadratga mos */
-  .dokon-input {
-    @apply w-full rounded-md border border-qora-3 bg-qora-2 px-4 py-3 text-base text-krem placeholder-gray-500 transition duration-300 sm:text-sm
-      focus:border-oltin focus:bg-qora focus:outline-none focus:ring-1 focus:ring-oltin/40;
+  /* Do'kon: iliq dark, cream va tilla. Tugma va inputlarda 6px (rounded-md) burchak — logodagi yumaloq kvadratga mos */
+  .store-input {
+    @apply w-full rounded-md border border-dark-3 bg-dark-2 px-4 py-3 text-base text-cream placeholder-gray-500 transition duration-300 sm:text-sm
+      focus:border-gold focus:bg-dark focus:outline-none focus:ring-1 focus:ring-gold/40;
   }
   /* Katta tugmalarda hover oddiy: faqat rang almashadi */
-  .dokon-btn {
-    @apply inline-flex min-h-[3rem] w-full items-center justify-center rounded-md bg-oltin px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-qora transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
-      hover:bg-oltin-och active:scale-[0.98]
-      disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-oltin;
+  .store-btn {
+    @apply inline-flex min-h-[3rem] w-full items-center justify-center rounded-md bg-gold px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-dark transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
+      hover:bg-gold-light active:scale-[0.98]
+      disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gold;
   }
-  .dokon-btn-chiziqli {
-    @apply inline-flex min-h-[2.75rem] items-center justify-center rounded-md border border-oltin px-5 py-3 text-sm uppercase tracking-[0.12em] text-oltin transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
-      hover:bg-oltin hover:text-qora active:scale-[0.98];
+  .store-btn-outline {
+    @apply inline-flex min-h-[2.75rem] items-center justify-center rounded-md border border-gold px-5 py-3 text-sm uppercase tracking-[0.12em] text-gold transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
+      hover:bg-gold hover:text-dark active:scale-[0.98];
   }
 
   /* Yuklanayotganda kartalar o'rnida yaltiroq kulrang bloklar */
-  .skelet {
-    @apply relative overflow-hidden bg-qora-2;
+  .skeleton {
+    @apply relative overflow-hidden bg-dark-2;
   }
-  .skelet::after {
+  .skeleton::after {
     content: '';
-    @apply absolute inset-0 animate-yaltirash bg-gradient-to-r from-transparent via-white/5 to-transparent;
+    @apply absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent;
   }
 
   /* Menyu havolasi tagidan tilla chiziq chiziladi */
-  .menu-havola {
-    @apply relative py-1 text-sm tracking-wide text-gray-300 transition-colors duration-300 hover:text-krem
-      after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-oltin after:transition-transform after:duration-300
+  .menu-link {
+    @apply relative py-1 text-sm tracking-wide text-gray-300 transition-colors duration-300 hover:text-cream
+      after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-gold after:transition-transform after:duration-300
       hover:after:scale-x-100;
   }
-  .menu-havola.active {
-    @apply text-oltin after:scale-x-100;
+  .menu-link.active {
+    @apply text-gold after:scale-x-100;
   }
   /* Telefon menyusidagi havolalar: barmoq uchun keng va baland qator */
-  .menu-havola-telefon {
+  .menu-link-mobile {
     @apply block w-full py-2 text-base;
   }
   /* Telefon menyusida tagidagi chiziq butun kenglikka cho'zilib ketmasligi uchun o'chiriladi */
-  .menu-havola-telefon::after {
+  .menu-link-mobile::after {
     display: none;
   }
 
   /* Yonga suriladigan qator (bo'limlar, rasm miniatyuralari): scrollbar ko'rinmaydi */
-  .yon-lenta {
+  .scroll-row {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  .yon-lenta::-webkit-scrollbar {
+  .scroll-row::-webkit-scrollbar {
     display: none;
   }
 }

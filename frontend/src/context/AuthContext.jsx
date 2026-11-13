@@ -1,12 +1,12 @@
 import { createContext, useContext, useState } from 'react';
 import { authApi } from '../api/auth';
-import { AUTH_KALIT } from '../api/client';
+import { AUTH_KEY } from '../api/client';
 
 const AuthContext = createContext(null);
 
-function saqlanganniOqish() {
+function readSaved() {
   try {
-    return JSON.parse(localStorage.getItem(AUTH_KALIT));
+    return JSON.parse(localStorage.getItem(AUTH_KEY));
   } catch {
     return null;
   }
@@ -14,28 +14,28 @@ function saqlanganniOqish() {
 
 export function AuthProvider({ children }) {
   // { token, foydalanuvchi } yoki null. Sahifa yangilansa ham localStorage'dan tiklanadi
-  const [auth, setAuth] = useState(saqlanganniOqish);
+  const [auth, setAuth] = useState(readSaved);
 
-  const kirish = async (usernameYokiEmail, parol) => {
-    const javob = await authApi.kirish({ usernameYokiEmail, parol });
-    localStorage.setItem(AUTH_KALIT, JSON.stringify(javob));
-    setAuth(javob);
-    return javob.foydalanuvchi;
+  const login = async (usernameOrEmail, password) => {
+    const response = await authApi.login({ usernameOrEmail, password });
+    localStorage.setItem(AUTH_KEY, JSON.stringify(response));
+    setAuth(response);
+    return response.user;
   };
 
-  const chiqish = () => {
-    localStorage.removeItem(AUTH_KALIT);
+  const logout = () => {
+    localStorage.removeItem(AUTH_KEY);
     setAuth(null);
   };
 
-  const qiymat = {
-    foydalanuvchi: auth?.foydalanuvchi ?? null,
-    adminmi: auth?.foydalanuvchi?.rol === 2,
-    kirish,
-    chiqish,
+  const value = {
+    user: auth?.user ?? null,
+    isAdmin: auth?.user?.role === 2,
+    login,
+    logout,
   };
 
-  return <AuthContext.Provider value={qiymat}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

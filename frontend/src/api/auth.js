@@ -1,13 +1,13 @@
 import client from './client';
 
 export const authApi = {
-  royxatdanOtish: async (payload) => {
-    const { data } = await client.post('/auth/royxatdan-otish', payload);
+  register: async (payload) => {
+    const { data } = await client.post('/auth/register', payload);
     return data; // yangi foydalanuvchi id
   },
 
-  kirish: async (payload) => {
-    const { data } = await client.post('/auth/kirish', payload);
+  login: async (payload) => {
+    const { data } = await client.post('/auth/login', payload);
     return data; // { token, foydalanuvchi }
   },
 };

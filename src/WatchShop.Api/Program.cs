@@ -40,15 +40,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.AddJwtAuthentication();
 
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-builder.Services.AddScoped<IMahsulotService, MahsulotService>();
-builder.Services.AddScoped<IRasmService, RasmService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IFoydalanuvchiService, FoydalanuvchiService>();
-builder.Services.AddScoped<ISavatService, SavatService>();
-builder.Services.AddScoped<IBuyurtmaService, BuyurtmaService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
-builder.Services.AddValidatorsFromAssemblyContaining<MahsulotYozishDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ProductWriteDtoValidator>();
 
 var app = builder.Build();
 
