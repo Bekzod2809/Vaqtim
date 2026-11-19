@@ -68,3 +68,7 @@ appsettings.*.local.json
 # Admin yuklagan rasmlar (papkaning o'zi qoladi, ichidagi fayllar git'ga tushmaydi)
 src/WatchShop.Api/wwwroot/rasmlar/*
 !src/WatchShop.Api/wwwroot/rasmlar/.gitkeep
+
+# Taqdimot fayllari va vaqtinchalik yig'ish papkasi
+.presentation-build/
+deliverables/

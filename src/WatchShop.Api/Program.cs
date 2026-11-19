@@ -30,11 +30,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var rawConnectionString =
+    Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+var connectionString = BuildPostgresConnectionString(rawConnectionString);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(connectionString);
+    // EnableRetryOnFailure: bulutda baza kechroq tayyor bo'lsa, ulanish qayta urinib ko'riladi
+    options.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure());
 });
 
 builder.AddJwtAuthentication();
@@ -52,10 +58,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<ProductWriteDtoValidator>()
 
 var app = builder.Build();
 
-// Dastur ishga tushganda baza oxirgi migration holatiga keltiriladi: "dotnet ef database update" ni qo'lda bajarish shart emas
+// Dastur ishga tushganda baza oxirgi migration holatiga keltiriladi va bo'sh bo'lsa boshlang'ich ma'lumotlar yoziladi
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+    DbSeeder.Seed(db);
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -72,12 +80,37 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-// wwwroot ichidagi fayllarni (rasmlarni) brauzerga berish uchun
+// wwwroot ichidagi frontend (index.html) va rasmlarni brauzerga berish uchun
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
+
+static string BuildPostgresConnectionString(string? raw)
+{
+    if (string.IsNullOrWhiteSpace(raw))
+    {
+        return string.Empty;
+    }
+
+    if (!raw.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) &&
+        !raw.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
+    {
+        return raw;
+    }
+
+    var uri = new Uri(raw);
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var username = Uri.UnescapeDataString(userInfo[0]);
+    var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty;
+    var database = uri.AbsolutePath.TrimStart('/');
+    var port = uri.Port > 0 ? uri.Port : 5432;
+
+    return $"Host={uri.Host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Prefer;Trust Server Certificate=true";
+}

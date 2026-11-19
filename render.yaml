@@ -1,0 +1,22 @@
+databases:
+  - name: vaqtim-db
+    plan: free
+    databaseName: vaqtim
+    user: vaqtim
+
+services:
+  - type: web
+    name: vaqtim
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/products
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: vaqtim-db
+          property: connectionString
+      - key: Jwt__SecurityKey
+        generateValue: true
