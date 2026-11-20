@@ -65,7 +65,7 @@ export default function UsersPage() {
             <tr>
               <th className="px-4 py-3">Ism familiya</th>
               <th className="px-4 py-3">Username</th>
-              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Telefon</th>
               <th className="px-4 py-3">Rol</th>
               <th className="px-4 py-3"></th>
             </tr>
@@ -96,7 +96,7 @@ export default function UsersPage() {
                     {f.firstName} {f.lastName}
                   </td>
                   <td className="px-4 py-3 text-gray-600">{f.username}</td>
-                  <td className="px-4 py-3 text-gray-600">{f.email}</td>
+                  <td className="px-4 py-3 text-gray-600">{f.phone || 'Kiritilmagan'}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`rounded px-2 py-0.5 text-xs font-medium ${
@@ -144,7 +144,7 @@ export default function UsersPage() {
                     {f.firstName} {f.lastName}
                   </p>
                   <p className="mt-0.5 truncate text-sm text-gray-600">{f.username}</p>
-                  <p className="truncate text-sm text-gray-500">{f.email}</p>
+                  <p className="mt-0.5 text-sm text-gray-500">{f.phone || 'Telefon: kiritilmagan'}</p>
                 </div>
 
                 <span

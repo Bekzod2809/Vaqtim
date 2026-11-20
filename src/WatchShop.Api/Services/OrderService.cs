@@ -14,21 +14,37 @@ public class OrderService : IOrderService
 {
     private readonly IBaseRepository<Order> OrderRepository;
     private readonly IBaseRepository<CartItem> CartRepository;
+    private readonly IBaseRepository<User> UserRepository;
     private readonly IValidator<OrderCreateDto> OrderValidator;
 
     public OrderService(
         IBaseRepository<Order> orderRepository,
         IBaseRepository<CartItem> cartRepository,
+        IBaseRepository<User> userRepository,
         IValidator<OrderCreateDto> orderValidator)
     {
         OrderRepository = orderRepository;
         CartRepository = cartRepository;
+        UserRepository = userRepository;
         OrderValidator = orderValidator;
     }
 
     public async Task<long> CreateAsync(long userId, OrderCreateDto dto)
     {
         OrderValidator.Validate(dto);
+
+        var user = await UserRepository.GetAllQuery()
+            .FirstOrDefaultAsync(x => x.UserId == userId);
+
+        if (user == null)
+        {
+            throw new NotFoundException("Foydalanuvchi topilmadi.");
+        }
+
+        if (string.IsNullOrWhiteSpace(user.Phone) || user.PhoneVerifiedAt == null)
+        {
+            throw new BadRequestException("Buyurtma berishdan oldin profilingizda telefon raqamingizni Telegram orqali tasdiqlang.");
+        }
 
         var cart = await CartRepository.GetAllQuery()
             .Include(s => s.Product)
@@ -52,7 +68,7 @@ public class OrderService : IOrderService
         {
             UserId = userId,
             DeliveryAddress = dto.DeliveryAddress,
-            Phone = dto.Phone,
+            Phone = user.Phone,
             Status = OrderStatus.New,
             CreatedAt = DateTime.UtcNow,
             Items = cart.Select(item => new OrderItem

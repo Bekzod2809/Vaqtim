@@ -16,8 +16,8 @@ export function AuthProvider({ children }) {
   // { token, foydalanuvchi } yoki null. Sahifa yangilansa ham localStorage'dan tiklanadi
   const [auth, setAuth] = useState(readSaved);
 
-  const login = async (usernameOrEmail, password) => {
-    const response = await authApi.login({ usernameOrEmail, password });
+  const login = async (username, password) => {
+    const response = await authApi.login({ username, password });
     localStorage.setItem(AUTH_KEY, JSON.stringify(response));
     setAuth(response);
     return response.user;
@@ -28,11 +28,18 @@ export function AuthProvider({ children }) {
     setAuth(null);
   };
 
+  const updateUser = (user) => {
+    const nextAuth = { ...auth, user };
+    localStorage.setItem(AUTH_KEY, JSON.stringify(nextAuth));
+    setAuth(nextAuth);
+  };
+
   const value = {
     user: auth?.user ?? null,
     isAdmin: auth?.user?.role === 2,
     login,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -20,9 +20,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(f => f.Email)
-            .IsRequired()
-            .HasMaxLength(150);
+        builder.Property(f => f.Phone)
+            .HasMaxLength(20);
+
+        builder.Property(f => f.PhoneVerifiedAt)
+            .HasColumnType("timestamp with time zone");
 
         builder.Property(f => f.Username)
             .IsRequired()
@@ -38,7 +40,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(f => f.Username)
             .IsUnique();
 
-        builder.HasIndex(f => f.Email)
+        builder.HasIndex(f => f.Phone)
             .IsUnique();
+
     }
 }

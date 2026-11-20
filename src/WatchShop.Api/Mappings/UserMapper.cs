@@ -12,7 +12,7 @@ public static class UserMapper
         {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            Email = dto.Email,
+            Phone = dto.Phone,
             Username = dto.Username,
             PasswordHash = passwordHash,
             Role = Role.User
@@ -26,7 +26,8 @@ public static class UserMapper
             UserId = user.UserId,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email,
+            Phone = user.Phone,
+            PhoneVerified = user.PhoneVerifiedAt.HasValue,
             Username = user.Username,
             Role = user.Role
         };

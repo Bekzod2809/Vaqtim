@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WatchShop.Api.Dtos;
+using WatchShop.Api.Configurations.Settings;
 using WatchShop.Api.Services;
 
 namespace WatchShop.Api.Controllers;
@@ -9,10 +10,19 @@ namespace WatchShop.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService AuthService;
+    private readonly TelegramSettings TelegramSettings;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, TelegramSettings telegramSettings)
     {
         AuthService = authService;
+        TelegramSettings = telegramSettings;
+    }
+
+    [HttpGet("telegram-bot")]
+    public ActionResult<string?> GetTelegramBotLink()
+    {
+        var username = TelegramSettings.BotUsername.Trim().TrimStart('@');
+        return Ok(string.IsNullOrWhiteSpace(username) ? null : $"https://t.me/{username}");
     }
 
     [HttpPost("register")]

@@ -20,7 +20,6 @@ public static class DbSeeder
                     FirstName = "Bekzod",
                     LastName = "Xasanov",
                     Username = "bekzodxasanov",
-                    Email = "bekzodjonxasanov7@gmail.com",
                     PasswordHash = "$2a$11$LKT0CYGIps.X71J5F2I7c.ew4v9MhD5vxHTqUMuhM0xfk0.LiaY8O",
                     Role = Role.Admin
                 },
@@ -29,7 +28,6 @@ public static class DbSeeder
                     FirstName = "Ali",
                     LastName = "Aliyev",
                     Username = "ali2000",
-                    Email = "aliyev7@gmail.com",
                     PasswordHash = "$2a$11$q4ULGQj3XyYBffT.aX9.huJCxH4Tz99/ZrqCH9HjDVlXg92zwLD1m",
                     Role = Role.User
                 },
@@ -38,7 +36,6 @@ public static class DbSeeder
                     FirstName = "Vali",
                     LastName = "Aliyev",
                     Username = "vali2000",
-                    Email = "aliyev@gmail.com",
                     PasswordHash = "$2a$11$ACf0LSjrBGQgyAd1bLZs5uMHTYWCaa6aVa8xm2FPeaaAu6Mt98.Bu",
                     Role = Role.User
                 });

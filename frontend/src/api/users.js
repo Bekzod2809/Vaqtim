@@ -9,4 +9,9 @@ export const usersApi = {
   changeRole: async (id, role) => {
     await client.put(`/users/${id}/role`, { role });
   },
+
+  updateProfile: async (profile) => {
+    const { data } = await client.put('/account/profile', profile);
+    return data;
+  },
 };

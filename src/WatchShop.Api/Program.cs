@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using WatchShop.Api.Configurations;
+using WatchShop.Api.Configurations.Settings;
 using WatchShop.Api.Data;
 using WatchShop.Api.Middlewares;
 using WatchShop.Api.Repositories;
@@ -11,6 +12,9 @@ using WatchShop.Api.Validators;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+var telegramSettings = builder.Configuration.GetSection("Telegram").Get<TelegramSettings>() ?? new TelegramSettings();
+builder.Services.AddSingleton(telegramSettings);
+builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -50,11 +54,13 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPhoneVerificationService, PhoneVerificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<ProductWriteDtoValidator>();
+builder.Services.AddHostedService<TelegramBotHostedService>();
 
 var app = builder.Build();
 

@@ -15,17 +15,20 @@ public class AuthService : IAuthService
     private readonly ITokenService TokenService;
     private readonly IValidator<RegisterDto> RegisterValidator;
     private readonly IValidator<LoginDto> LoginValidator;
+    private readonly IPhoneVerificationService PhoneVerificationService;
 
     public AuthService(
         IBaseRepository<User> userRepository,
         ITokenService tokenService,
         IValidator<RegisterDto> registerValidator,
-        IValidator<LoginDto> loginValidator)
+        IValidator<LoginDto> loginValidator,
+        IPhoneVerificationService phoneVerificationService)
     {
         UserRepository = userRepository;
         TokenService = tokenService;
         RegisterValidator = registerValidator;
         LoginValidator = loginValidator;
+        PhoneVerificationService = phoneVerificationService;
     }
 
     public async Task<long> RegisterAsync(RegisterDto dto)
@@ -33,8 +36,10 @@ public class AuthService : IAuthService
         RegisterValidator.Validate(dto);
 
         // PostgreSQL "Bekzod" va "bekzod" ni har xil deb biladi, shuning uchun hammasini kichik harfda saqlaymiz
+        dto.FirstName = dto.FirstName.Trim();
+        dto.LastName = dto.LastName.Trim();
         dto.Username = Lowercase(dto.Username);
-        dto.Email = Lowercase(dto.Email);
+        dto.Phone = dto.Phone.Trim();
 
         var usernameTaken = await UserRepository.GetAllQuery()
             .AnyAsync(f => f.Username == dto.Username);
@@ -44,15 +49,17 @@ public class AuthService : IAuthService
             throw new BadRequestException("Bu username allaqachon band.");
         }
 
-        var emailTaken = await UserRepository.GetAllQuery()
-            .AnyAsync(f => f.Email == dto.Email);
-
-        if (emailTaken)
+        var phoneTaken = await UserRepository.GetAllQuery()
+            .AnyAsync(f => f.Phone == dto.Phone);
+        if (phoneTaken)
         {
-            throw new BadRequestException("Bu email allaqachon ro'yxatdan o'tgan.");
+            throw new BadRequestException("Bu telefon raqami boshqa akkauntga biriktirilgan.");
         }
 
+        await PhoneVerificationService.VerifyAndConsumeAsync(dto.Phone, dto.VerificationCode);
+
         var user = dto.ToEntity(PasswordHasher.Hash(dto.Password));
+        user.PhoneVerifiedAt = DateTime.UtcNow;
 
         await UserRepository.AddAsync(user);
         await UserRepository.SaveChangesAsync();
@@ -64,15 +71,15 @@ public class AuthService : IAuthService
     {
         LoginValidator.Validate(dto);
 
-        var input = Lowercase(dto.UsernameOrEmail);
+        var input = Lowercase(dto.Username);
 
         var user = await UserRepository.GetAllQuery()
-            .FirstOrDefaultAsync(f => f.Username == input || f.Email == input);
+            .FirstOrDefaultAsync(f => f.Username == input);
 
         // Qaysi biri xato ekanini aytmaymiz: begona odam username mavjudligini bilib olmasin
         if (user == null || !PasswordHasher.Verify(dto.Password, user.PasswordHash))
         {
-            throw new UnauthorizedException("Username/email yoki parol noto'g'ri.");
+            throw new UnauthorizedException("Username yoki parol noto'g'ri.");
         }
 
         return new LoginResponseDto

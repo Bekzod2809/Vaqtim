@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [form, setForm] = useState({ usernameOrEmail: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const user = await login(form.usernameOrEmail, form.password);
+      const user = await login(form.username, form.password);
       // Admin panelga kirmoqchi bo'lib bu yerga yo'naltirilgan bo'lsa, o'sha sahifaga qaytaramiz
       const goBack = location.state?.goBack;
       navigate(goBack ?? (user.role === 2 ? '/admin' : '/'), { replace: true });
@@ -47,14 +47,14 @@ export default function LoginPage() {
         <form onSubmit={submit} className="space-y-5">
           <div>
             <input
-              name="usernameOrEmail"
-              value={form.usernameOrEmail}
+              name="username"
+              value={form.username}
               onChange={change}
-              placeholder="Username yoki email"
+              placeholder="Username"
               autoComplete="username"
               className="store-input"
             />
-            {errors.usernameOrEmail && <p className="mt-1 text-xs text-red-400">{errors.usernameOrEmail}</p>}
+            {errors.username && <p className="mt-1 text-xs text-red-400">{errors.username}</p>}
           </div>
 
           <div>

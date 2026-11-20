@@ -50,6 +50,9 @@ export default function StoreLayout() {
             <NavLink to="/myOrders" className={menuStyle(q)}>
               Buyurtmalarim
             </NavLink>
+            <NavLink to="/profile" className={menuStyle(q)}>
+              Profil
+            </NavLink>
             {isAdmin && (
               <Link to="/admin" className={`menu-link text-gold ${q}`}>
                 Admin panel

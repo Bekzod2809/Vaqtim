@@ -5,14 +5,16 @@ import { ordersApi } from '../api/orders';
 import { LogoMark } from '../components/Logo';
 import QuantityPicker from '../components/QuantityPicker';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import { formatPrice, fieldErrors } from '../utils';
 
 export default function CartPage() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { user } = useAuth();
 
   const [cart, setCart] = useState(null);
-  const [form, setForm] = useState({ deliveryAddress: '', phone: '+998' });
+  const [form, setForm] = useState({ deliveryAddress: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -56,7 +58,7 @@ export default function CartPage() {
     setSubmitting(true);
 
     try {
-      const id = await ordersApi.place(form);
+      const id = await ordersApi.place({ deliveryAddress: form.deliveryAddress });
       toast(`#${id} buyurtma qabul qilindi`);
       navigate('/myOrders');
     } catch (err) {
@@ -162,24 +164,21 @@ export default function CartPage() {
             {errors.deliveryAddress && <p className="mt-1 text-xs text-red-400">{errors.deliveryAddress}</p>}
           </div>
 
-          <div>
-            <input
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              placeholder="+998901234567"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              className="store-input"
-            />
-            {errors.phone && <p className="mt-1 text-xs text-red-400">{errors.phone}</p>}
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <div>
+              <p className="text-gray-500">Telefon raqami</p>
+              <p className="mt-1 text-cream">{user?.phone || 'Hali kiritilmagan'}</p>
+            </div>
+            <Link to="/profile" className="shrink-0 text-gold underline underline-offset-4">
+              {user?.phone ? "O'zgartirish" : 'Raqam kiritish'}
+            </Link>
           </div>
 
           <p className="text-xs text-gray-500">To'lov yetkazib berilganda naqd amalga oshiriladi.</p>
 
           {notEnough && <p className="text-sm text-red-400">Avval omborda yetarli bo'lmagan mahsulotlar sonini kamaytiring.</p>}
 
-          <button type="submit" disabled={submitting || notEnough} className="store-btn">
+          <button type="submit" disabled={submitting || notEnough || !user?.phone || !user?.phoneVerified} className="store-btn">
             {submitting ? 'Yuborilmoqda...' : 'Buyurtma berish'}
           </button>
         </form>

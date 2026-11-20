@@ -10,6 +10,7 @@ import CartPage from './pages/CartPage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 import ProductsPage from './pages/admin/ProductsPage';
 import ProductFormPage from './pages/admin/ProductFormPage';
 import OrdersPage from './pages/admin/OrdersPage';
@@ -32,6 +33,7 @@ export default function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/myOrders" element={<MyOrdersPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
               </Route>
             </Route>
 
