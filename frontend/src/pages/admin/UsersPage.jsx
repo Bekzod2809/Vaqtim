@@ -9,11 +9,16 @@ export default function UsersPage() {
   const toast = useToast();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const load = async () => {
+    setLoading(true);
+    setError('');
+
     try {
       setUsers(await usersApi.getAll());
     } catch (err) {
+      setError(err.message || 'Foydalanuvchilarni yuklab bo‘lmadi.');
       toast(err.message, 'xato');
     } finally {
       setLoading(false);
@@ -45,6 +50,15 @@ export default function UsersPage() {
       <h1 className="mb-2 text-xl font-semibold sm:text-2xl">Foydalanuvchilar</h1>
       <p className="mb-6 text-sm text-gray-500">Rol o'zgarishi foydalanuvchi qayta kirganda kuchga kiradi.</p>
 
+      {error && (
+        <div role="alert" className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <span>{error}</span>
+          <button onClick={load} className="font-medium underline underline-offset-2">
+            Qayta urinish
+          </button>
+        </div>
+      )}
+
       <div className="hidden overflow-x-auto rounded-lg border border-gray-200 bg-white md:block">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500">
@@ -65,8 +79,16 @@ export default function UsersPage() {
               </tr>
             )}
 
+            {!loading && !error && users.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-10 text-center text-gray-500">
+                  Hozircha foydalanuvchilar yo'q.
+                </td>
+              </tr>
+            )}
+
             {users.map((f) => {
-              const self = f.userId === self.userId;
+              const isSelf = f.userId === self.userId;
 
               return (
                 <tr key={f.userId}>
@@ -88,8 +110,8 @@ export default function UsersPage() {
                     {/* O'zini User qilib qo'ysa, admin panelga kira olmay qoladi */}
                     <button
                       onClick={() => changeRole(f)}
-                      disabled={self}
-                      title={self ? "O'z rolingizni o'zgartira olmaysiz" : ''}
+                      disabled={isSelf}
+                      title={isSelf ? "O'z rolingizni o'zgartira olmaysiz" : ''}
                       className="admin-btn-secondary px-3 py-1.5"
                     >
                       {f.role === 2 ? 'User qilish' : 'Admin qilish'}
@@ -105,9 +127,14 @@ export default function UsersPage() {
       {/* Telefon: jadval o'rniga kartalar */}
       <div className="space-y-3 md:hidden">
         {loading && <p className="py-8 text-center text-gray-500">Yuklanmoqda...</p>}
+        {!loading && !error && users.length === 0 && (
+          <p className="rounded-lg border border-gray-200 bg-white px-4 py-8 text-center text-gray-500">
+            Hozircha foydalanuvchilar yo'q.
+          </p>
+        )}
 
         {users.map((f) => {
-          const self = f.userId === self.userId;
+          const isSelf = f.userId === self.userId;
 
           return (
             <div key={f.userId} className="rounded-lg border border-gray-200 bg-white p-4">
@@ -131,10 +158,10 @@ export default function UsersPage() {
 
               <button
                 onClick={() => changeRole(f)}
-                disabled={self}
+                disabled={isSelf}
                 className="admin-btn-secondary mt-3 w-full disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {self ? "O'z rolingizni o'zgartira olmaysiz" : f.role === 2 ? 'User qilish' : 'Admin qilish'}
+                {isSelf ? "O'z rolingizni o'zgartira olmaysiz" : f.role === 2 ? 'User qilish' : 'Admin qilish'}
               </button>
             </div>
           );
