@@ -20,3 +20,7 @@ services:
           property: connectionString
       - key: Jwt__SecurityKey
         generateValue: true
+      # Telegram bot tokeni maxfiy: qiymati git'ga yozilmaydi,
+      # Render Dashboard -> vaqtim -> Environment bo'limida qo'lda kiritiladi.
+      - key: Telegram__BotToken
+        sync: false
