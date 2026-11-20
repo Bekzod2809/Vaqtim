@@ -12,6 +12,13 @@ namespace WatchShop.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Phone",
+                table: "Users",
+                type: "character varying(20)",
+                maxLength: 20,
+                nullable: true);
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "PhoneVerifiedAt",
                 table: "Users",
@@ -57,6 +64,10 @@ namespace WatchShop.Api.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_Users_Phone",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "Phone",
                 table: "Users");
 
             migrationBuilder.DropColumn(
