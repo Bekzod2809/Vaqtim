@@ -35,9 +35,30 @@ public class TelegramBotHostedService : BackgroundService
             return;
         }
 
+        var token = Settings.BotToken.Trim().Trim('"', '\'').Trim();
         var client = HttpClientFactory.CreateClient();
         client.Timeout = TimeSpan.FromSeconds(40);
-        var baseUrl = $"https://api.telegram.org/bot{Settings.BotToken}";
+        var baseUrl = $"https://api.telegram.org/bot{token}";
+
+        try
+        {
+            using var meResponse = await client.GetAsync($"{baseUrl}/getMe", stoppingToken);
+            if (!meResponse.IsSuccessStatusCode)
+            {
+                Logger.LogError(
+                    "Telegram bot tokeni noto'g'ri (getMe HTTP {StatusCode}). Render'dagi Telegram__BotToken qiymatini tekshiring.",
+                    (int)meResponse.StatusCode);
+                return;
+            }
+
+            using var me = JsonDocument.Parse(await meResponse.Content.ReadAsStringAsync(stoppingToken));
+            Logger.LogInformation("Telegram bot ishga tushdi: @{Username}",
+                me.RootElement.GetProperty("result").GetProperty("username").GetString());
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogTelegramFailure(ex, "getMe tekshiruvi");
+        }
         long offset = 0;
         var queues = Enumerable.Range(0, WorkerCount)
             .Select(_ => Channel.CreateBounded<JsonElement>(new BoundedChannelOptions(QueueCapacity)
@@ -144,6 +165,14 @@ public class TelegramBotHostedService : BackgroundService
     private void LogTelegramFailure(Exception exception, string operation)
     {
         var statusCode = (exception as HttpRequestException)?.StatusCode;
+        if (statusCode == System.Net.HttpStatusCode.Conflict)
+        {
+            Logger.LogWarning(
+                "Telegram bot {Operation}: 409 Conflict - shu token bilan boshqa joyda (masalan, kompyuteringizda) ham bot ishlab turibdi. Uni to'xtating.",
+                operation);
+            return;
+        }
+
         Logger.LogWarning(
             "Telegram bot {Operation} jarayonida xatolik. HTTP status: {StatusCode}; sabab turi: {ExceptionType}.",
             operation,
