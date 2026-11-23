@@ -217,10 +217,10 @@ export default function CartPage() {
       <h1 className="mb-7 animate-appear font-serif text-3xl font-semibold text-cream sm:text-4xl md:mb-10 md:text-5xl">Savat</h1>
 
       <div className="grid gap-8 lg:grid-cols-3 lg:gap-10">
-        <ul className="divide-y divide-dark-3 border-y border-dark-3 lg:col-span-2">
+        <ul className="min-w-0 divide-y divide-dark-3 border-y border-dark-3 lg:col-span-2">
           {cart.products.map((q, i) => (
-            <li key={q.cartItemId} className="flex animate-appear gap-4 py-5 sm:gap-5 sm:py-6" style={{ animationDelay: `${i * 80}ms` }}>
-              <Link to={`/product/${q.productId}`} className="group h-24 w-24 shrink-0 overflow-hidden bg-dark-2 ring-1 ring-dark-3 sm:h-28 sm:w-28">
+            <li key={q.cartItemId} className="flex animate-appear gap-3.5 py-5 sm:gap-5 sm:py-6" style={{ animationDelay: `${i * 80}ms` }}>
+              <Link to={`/product/${q.productId}`} className="group h-20 w-20 shrink-0 overflow-hidden bg-dark-2 ring-1 ring-dark-3 sm:h-28 sm:w-28">
                 {q.mainImageUrl && (
                   <img
                     src={q.mainImageUrl}
@@ -230,16 +230,16 @@ export default function CartPage() {
                 )}
               </Link>
 
-              <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
-                <div className="flex justify-between gap-3 sm:gap-4">
+              <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 sm:gap-4">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                   <div className="min-w-0">
-                    <Link to={`/product/${q.productId}`} className="font-serif text-lg leading-snug text-cream transition hover:text-gold sm:text-2xl">
+                    <Link to={`/product/${q.productId}`} className="block break-words font-serif text-lg leading-snug text-cream transition hover:text-gold sm:text-2xl">
                       {q.name}
                     </Link>
-                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">{formatPrice(q.price)}</p>
+                    <p className="mt-0.5 text-xs text-gray-500 sm:mt-1 sm:text-sm">{formatPrice(q.price)}</p>
                     {!q.hasEnoughStock && <p className="mt-1 text-xs text-red-400 sm:text-sm">Omborda yetarli emas</p>}
                   </div>
-                  <p className="whitespace-nowrap text-sm text-cream sm:text-base">{formatPrice(q.amount)}</p>
+                  <p className="whitespace-nowrap text-sm font-medium text-cream sm:text-base">{formatPrice(q.amount)}</p>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -259,7 +259,7 @@ export default function CartPage() {
 
         <form
           onSubmit={placeOrder}
-          className="h-fit animate-appear space-y-5 border border-dark-3 bg-dark-2 p-5 sm:p-7 lg:sticky lg:top-28"
+          className="h-fit min-w-0 animate-appear space-y-5 border border-dark-3 bg-dark-2 p-4 sm:p-7 lg:sticky lg:top-28"
           style={{ animationDelay: '150ms' }}
         >
           <p className="text-xs uppercase tracking-[0.3em] text-gold">Buyurtma</p>
@@ -408,8 +408,8 @@ export default function CartPage() {
               )}
             </div>
 
-            <div className="flex items-center justify-between gap-3 rounded-md border border-gold/30 bg-dark px-3.5 py-3">
-              <span className="font-mono text-sm font-medium tracking-wider text-gold sm:text-base">
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-gold/30 bg-dark px-3 py-2.5 sm:px-3.5 sm:py-3">
+              <span className="font-mono text-xs font-medium tracking-wider text-gold min-[380px]:text-sm sm:text-base">
                 {paymentCard.cardNumber}
               </span>
               <button

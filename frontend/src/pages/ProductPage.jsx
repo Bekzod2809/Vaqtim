@@ -148,7 +148,7 @@ export default function ProductPage() {
             </p>
           )}
 
-          <div className="mt-8 grid animate-appear grid-cols-[auto_1fr] gap-3 sm:mt-10" style={{ animationDelay: '500ms' }}>
+          <div className="mt-8 grid animate-appear grid-cols-1 gap-3 min-[400px]:grid-cols-[auto_1fr] sm:mt-10" style={{ animationDelay: '500ms' }}>
             <QuantityPicker
               large
               quantity={quantity}

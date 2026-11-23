@@ -68,7 +68,7 @@ export default function CatalogPage() {
             {TAGLINE}
           </p>
           <h1
-            className="mt-4 animate-appear font-serif text-4xl font-semibold leading-[1.08] text-cream sm:mt-5 sm:text-5xl md:text-7xl"
+            className="mt-4 animate-appear font-serif text-3xl font-semibold leading-[1.1] text-cream min-[400px]:text-4xl sm:mt-5 sm:text-5xl md:text-7xl"
             style={{ animationDelay: '1.45s' }}
           >
             Vaqtingizga munosib tanlov

@@ -95,8 +95,8 @@ export default function StoreLayout() {
             <FullLogo tagline />
           </Link>
 
-          <nav className="hidden items-center gap-7 md:flex">
-            {user && <span className="text-sm text-gray-500">{user.firstName}</span>}
+          <nav className="hidden items-center gap-4 md:flex lg:gap-7">
+            {user && <span className="hidden max-w-[9rem] truncate text-sm text-gray-500 lg:inline">{user.firstName}</span>}
             {links()}
           </nav>
 
@@ -126,17 +126,17 @@ export default function StoreLayout() {
         <Outlet />
       </main>
 
-      <footer className="mt-20 border-t border-dark-3">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-3 md:py-14">
-          <div>
+      <footer className="mt-16 border-t border-dark-3 sm:mt-20">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-10 sm:gap-10 md:grid-cols-3 md:py-14">
+          <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-3">
-              <LogoMark className="h-12 w-12" />
+              <LogoMark className="h-11 w-11 shrink-0 sm:h-12 sm:w-12" />
               <div>
                 <p className="font-serif text-2xl font-semibold text-cream">{STORE_NAME}</p>
                 <p className="text-[0.6rem] uppercase tracking-[0.35em] text-gold">{TAGLINE}</p>
               </div>
             </div>
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-gray-500">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-gray-500 sm:mt-5">
               Soatlar va aksessuarlar. Karta orqali xavfsiz to'lov va O'zbekiston bo'ylab BTS Express orqali yetkazib berish.
             </p>
           </div>

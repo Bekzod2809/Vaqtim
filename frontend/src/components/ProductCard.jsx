@@ -47,7 +47,7 @@ export default function ProductCard({ product: m, index = 0 }) {
 
       <div className="pt-3 sm:pt-4">
         <p className="truncate text-[0.65rem] uppercase tracking-[0.2em] text-gold sm:text-[0.7rem] sm:tracking-[0.25em]">{m.brand}</p>
-        <h3 className="mt-1 font-serif text-lg leading-snug text-cream transition-colors duration-300 group-hover:text-gold-light sm:text-xl">
+        <h3 className="mt-1 line-clamp-2 font-serif text-base leading-snug text-cream transition-colors duration-300 group-hover:text-gold-light sm:text-xl">
           {m.name}
         </h3>
 

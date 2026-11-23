@@ -97,11 +97,11 @@
 
   /* Do'kon: iliq dark, cream va tilla. Tugma va inputlarda 6px (rounded-md) burchak — logodagi yumaloq kvadratga mos */
   .store-input {
-    @apply w-full rounded-md border border-dark-3 bg-dark-2 px-4 py-3 text-base text-cream placeholder-gray-500 transition duration-300 sm:text-sm
+    @apply w-full min-w-0 rounded-md border border-dark-3 bg-dark-2 px-3.5 py-3 text-base text-cream placeholder-gray-500 transition duration-300 sm:px-4 sm:text-sm
       focus:border-gold focus:bg-dark focus:outline-none focus:ring-1 focus:ring-gold/40;
   }
   .store-select {
-    @apply w-full appearance-none rounded-md border border-dark-3 bg-dark-2 px-4 py-3 pr-10 text-base text-cream transition duration-300 sm:text-sm
+    @apply w-full min-w-0 appearance-none truncate rounded-md border border-dark-3 bg-dark-2 px-3.5 py-3 pr-10 text-base text-cream transition duration-300 sm:px-4 sm:text-sm
       focus:border-gold focus:bg-dark focus:outline-none focus:ring-1 focus:ring-gold/40
       disabled:cursor-not-allowed disabled:opacity-45;
   }
@@ -111,7 +111,7 @@
   }
   /* Katta tugmalarda hover oddiy: faqat rang almashadi */
   .store-btn {
-    @apply inline-flex min-h-[3rem] w-full items-center justify-center rounded-md bg-gold px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-dark transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]
+    @apply inline-flex min-h-[3rem] w-full items-center justify-center rounded-md bg-gold px-4 py-3.5 text-center text-xs font-semibold uppercase leading-snug tracking-[0.1em] text-dark transition-colors duration-200 sm:px-6 sm:text-sm sm:tracking-[0.15em]
       hover:bg-gold-light active:scale-[0.98]
       disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gold;
   }

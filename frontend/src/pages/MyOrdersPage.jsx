@@ -106,7 +106,7 @@ export default function MyOrdersPage() {
               ))}
             </ul>
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="min-w-0 space-y-1 break-words text-sm text-gray-500">
                 <p>
                   {b.deliveryAddress} · {b.phone}
@@ -122,7 +122,7 @@ export default function MyOrdersPage() {
                   </button>
                 )}
               </div>
-              <div className="flex w-full items-center justify-between gap-5 sm:w-auto sm:justify-end">
+              <div className="flex w-full shrink-0 items-center justify-between gap-5 border-t border-dark-3 pt-3 sm:w-auto sm:justify-end sm:border-t-0 sm:pt-0">
                 <span className="font-serif text-xl text-gold sm:text-2xl">{formatPrice(b.totalAmount)}</span>
                 {b.status === 1 && (
                   <button onClick={() => cancel(b)} className="-mr-2 px-2 py-2 text-sm text-gray-500 transition hover:text-red-400">

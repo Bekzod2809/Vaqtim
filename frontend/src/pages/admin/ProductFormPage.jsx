@@ -250,7 +250,7 @@ export default function ProductFormPage() {
             accept=".jpg,.jpeg,.png,.webp"
             multiple
             onChange={(e) => setNewFiles(Array.from(e.target.files))}
-            className="block text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
+            className="block w-full max-w-full overflow-hidden text-ellipsis text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
           />
           <p className="mt-1 text-xs text-gray-500">
             jpg, png yoki webp, har biri 5 MB gacha. Rasmi yo'q mahsulotda birinchi yuklangan rasm asosiy bo'ladi.

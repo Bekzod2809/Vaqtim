@@ -96,7 +96,7 @@ export default function OrdersPage() {
           Savatda xaridorlarga ko'rinadigan karta raqami va karta egasi.
         </p>
 
-        <form onSubmit={saveCard} className="mt-4 grid gap-3 sm:grid-cols-3">
+        <form onSubmit={saveCard} className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_auto]">
           <div>
             <label className="admin-label">Karta raqami (16 raqam)</label>
             <input
@@ -123,8 +123,8 @@ export default function OrdersPage() {
             />
           </div>
 
-          <div className="flex items-end">
-            <button type="submit" disabled={savingCard} className="admin-btn w-full sm:w-auto">
+          <div className="flex items-end sm:col-span-2 lg:col-span-1">
+            <button type="submit" disabled={savingCard} className="admin-btn w-full lg:w-auto">
               {savingCard ? 'Saqlanmoqda...' : 'Kartani saqlash'}
             </button>
           </div>
