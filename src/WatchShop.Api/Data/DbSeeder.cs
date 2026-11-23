@@ -1,3 +1,4 @@
+using WatchShop.Api.Configurations.Settings;
 using WatchShop.Api.Entities;
 using WatchShop.Api.Enums;
 
@@ -6,41 +7,21 @@ namespace WatchShop.Api.Data;
 public static class DbSeeder
 {
     /// <summary>
-    /// Baza bo'sh bo'lganda boshlang'ich foydalanuvchilar va mahsulotlarni qo'shadi.
+    /// Baza bo'sh bo'lganda boshlang'ich mahsulotlarni qo'shadi va Admin__Phone bo'yicha rolni yangilaydi.
     /// </summary>
-    public static void Seed(AppDbContext db)
+    public static void Seed(AppDbContext db, AdminSettings? adminSettings = null)
     {
         var hasChanges = false;
 
-        if (!db.Users.Any())
+        var adminPhone = adminSettings?.NormalizedPhone;
+        if (!string.IsNullOrEmpty(adminPhone))
         {
-            db.Users.AddRange(
-                new User
-                {
-                    FirstName = "Bekzod",
-                    LastName = "Xasanov",
-                    Username = "bekzodxasanov",
-                    PasswordHash = "$2a$11$LKT0CYGIps.X71J5F2I7c.ew4v9MhD5vxHTqUMuhM0xfk0.LiaY8O",
-                    Role = Role.Admin
-                },
-                new User
-                {
-                    FirstName = "Ali",
-                    LastName = "Aliyev",
-                    Username = "ali2000",
-                    PasswordHash = "$2a$11$q4ULGQj3XyYBffT.aX9.huJCxH4Tz99/ZrqCH9HjDVlXg92zwLD1m",
-                    Role = Role.User
-                },
-                new User
-                {
-                    FirstName = "Vali",
-                    LastName = "Aliyev",
-                    Username = "vali2000",
-                    PasswordHash = "$2a$11$ACf0LSjrBGQgyAd1bLZs5uMHTYWCaa6aVa8xm2FPeaaAu6Mt98.Bu",
-                    Role = Role.User
-                });
-
-            hasChanges = true;
+            var adminUser = db.Users.FirstOrDefault(u => u.Phone == adminPhone && u.PhoneVerifiedAt != null);
+            if (adminUser != null && adminUser.Role != Role.Admin)
+            {
+                adminUser.Role = Role.Admin;
+                hasChanges = true;
+            }
         }
 
         if (!db.Products.Any())

@@ -1,7 +1,9 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using WatchShop.Api.Configurations.Settings;
 using WatchShop.Api.Dtos;
 using WatchShop.Api.Entities;
+using WatchShop.Api.Enums;
 using WatchShop.Api.Exceptions;
 using WatchShop.Api.Mappings;
 using WatchShop.Api.Repositories;
@@ -16,19 +18,22 @@ public class AuthService : IAuthService
     private readonly IValidator<RegisterDto> RegisterValidator;
     private readonly IValidator<LoginDto> LoginValidator;
     private readonly IPhoneVerificationService PhoneVerificationService;
+    private readonly AdminSettings AdminSettings;
 
     public AuthService(
         IBaseRepository<User> userRepository,
         ITokenService tokenService,
         IValidator<RegisterDto> registerValidator,
         IValidator<LoginDto> loginValidator,
-        IPhoneVerificationService phoneVerificationService)
+        IPhoneVerificationService phoneVerificationService,
+        AdminSettings adminSettings)
     {
         UserRepository = userRepository;
         TokenService = tokenService;
         RegisterValidator = registerValidator;
         LoginValidator = loginValidator;
         PhoneVerificationService = phoneVerificationService;
+        AdminSettings = adminSettings;
     }
 
     public async Task<long> RegisterAsync(RegisterDto dto)
@@ -60,6 +65,10 @@ public class AuthService : IAuthService
 
         var user = dto.ToEntity(PasswordHasher.Hash(dto.Password));
         user.PhoneVerifiedAt = DateTime.UtcNow;
+        if (AdminSettings.IsAdminPhone(dto.Phone))
+        {
+            user.Role = Role.Admin;
+        }
 
         await UserRepository.AddAsync(user);
         await UserRepository.SaveChangesAsync();

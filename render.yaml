@@ -24,3 +24,7 @@ services:
       # Render Dashboard -> vaqtim -> Environment bo'limida qo'lda kiritiladi.
       - key: Telegram__BotToken
         sync: false
+      # Admin qilinadigan telefon raqami (+998901234567): git'ga yozilmaydi,
+      # Render Dashboard -> vaqtim -> Environment bo'limida qo'lda kiritiladi.
+      - key: Admin__Phone
+        sync: false

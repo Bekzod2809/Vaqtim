@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 var telegramSettings = builder.Configuration.GetSection("Telegram").Get<TelegramSettings>() ?? new TelegramSettings();
 builder.Services.AddSingleton(telegramSettings);
+var adminSettings = builder.Configuration.GetSection("Admin").Get<AdminSettings>() ?? new AdminSettings();
+builder.Services.AddSingleton(adminSettings);
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient("Telegram", client =>
 {
@@ -74,7 +76,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-    DbSeeder.Seed(db);
+    DbSeeder.Seed(db, adminSettings);
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
