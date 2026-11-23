@@ -72,3 +72,6 @@ src/WatchShop.Api/wwwroot/rasmlar/*
 # Taqdimot fayllari va vaqtinchalik yig'ish papkasi
 .presentation-build/
 deliverables/
+
+# Yuklangan to'lov cheklari git'ga kirmasin
+src/WatchShop.Api/wwwroot/images/receipt-*
