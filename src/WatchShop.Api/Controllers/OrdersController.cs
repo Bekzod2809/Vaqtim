@@ -20,7 +20,7 @@ public class OrdersController : ControllerBase
     private long UserId => long.Parse(User.FindFirst("UserId")!.Value);
 
     [HttpPost]
-    public async Task<long> PlaceOrder(OrderCreateDto dto)
+    public async Task<long> PlaceOrder([FromForm] OrderCreateDto dto)
     {
         return await OrderService.CreateAsync(UserId, dto);
     }

@@ -12,6 +12,7 @@ const STEPS = [1, 2, 3];
 export default function MyOrdersPage() {
   const toast = useToast();
   const [orders, setOrders] = useState(null);
+  const [previewReceipt, setPreviewReceipt] = useState(null);
 
   const load = async () => {
     try {
@@ -106,9 +107,20 @@ export default function MyOrdersPage() {
             </ul>
 
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="min-w-0 break-words text-sm text-gray-500">
-                {b.deliveryAddress} · {b.phone}
-                {b.additionalPhone ? `, ${b.additionalPhone}` : ''}
+              <div className="min-w-0 space-y-1 break-words text-sm text-gray-500">
+                <p>
+                  {b.deliveryAddress} · {b.phone}
+                  {b.additionalPhone ? `, ${b.additionalPhone}` : ''}
+                </p>
+                {b.receiptImageUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewReceipt(b.receiptImageUrl)}
+                    className="text-xs text-gold underline underline-offset-4 hover:text-gold-light"
+                  >
+                    Yuklangan to'lov chekini ko'rish
+                  </button>
+                )}
               </div>
               <div className="flex w-full items-center justify-between gap-5 sm:w-auto sm:justify-end">
                 <span className="font-serif text-xl text-gold sm:text-2xl">{formatPrice(b.totalAmount)}</span>
@@ -122,6 +134,37 @@ export default function MyOrdersPage() {
           </article>
         ))}
       </div>
+
+      {previewReceipt && (
+        <div
+          onClick={() => setPreviewReceipt(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[90vh] max-w-lg overflow-auto rounded-md border border-dark-3 bg-dark-2 p-3"
+          >
+            <img src={previewReceipt} alt="To'lov cheki" className="max-h-[78vh] w-auto rounded object-contain" />
+            <div className="mt-3 flex justify-end gap-3">
+              <a
+                href={previewReceipt}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs text-gold underline underline-offset-4"
+              >
+                Yangi oynada ochish
+              </a>
+              <button
+                type="button"
+                onClick={() => setPreviewReceipt(null)}
+                className="text-xs text-gray-400 hover:text-cream"
+              >
+                Yopish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

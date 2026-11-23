@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cartApi } from '../api/cart';
 import { ordersApi } from '../api/orders';
+import { paymentSettingsApi } from '../api/paymentSettings';
 import { LogoMark } from '../components/Logo';
 import QuantityPicker from '../components/QuantityPicker';
 import { useToast } from '../context/ToastContext';
@@ -26,13 +27,19 @@ export default function CartPage() {
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useAuth();
+  const fileInputRef = useRef(null);
 
   const [cart, setCart] = useState(null);
+  const [paymentCard, setPaymentCard] = useState({ cardNumber: '8600 0000 0000 0000', cardHolder: 'Vaqtim' });
+  const [copiedCard, setCopiedCard] = useState(false);
+
   const [region, setRegion] = useState('');
   const [district, setDistrict] = useState('');
   const [branchCode, setBranchCode] = useState('');
   const [showAdditionalPhone, setShowAdditionalPhone] = useState(false);
   const [additionalPhone, setAdditionalPhone] = useState('');
+  const [receiptFile, setReceiptFile] = useState(null);
+  const [receiptPreview, setReceiptPreview] = useState('');
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -52,13 +59,32 @@ export default function CartPage() {
 
   useEffect(() => {
     load();
+    paymentSettingsApi
+      .get()
+      .then((data) => {
+        if (data?.cardNumber) {
+          setPaymentCard(data);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!receiptFile) {
+      setReceiptPreview('');
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(receiptFile);
+    setReceiptPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [receiptFile]);
 
   const handleRegionChange = (e) => {
     setRegion(e.target.value);
     setDistrict('');
     setBranchCode('');
-    setErrors({});
+    setErrors((curr) => ({ ...curr, deliveryAddress: undefined }));
   };
 
   const handleDistrictChange = (e) => {
@@ -66,12 +92,41 @@ export default function CartPage() {
     setDistrict(nextDistrict);
     const nextBranches = districts.find((d) => d.district === nextDistrict)?.branches ?? [];
     setBranchCode(nextBranches.length === 1 ? nextBranches[0].code : '');
-    setErrors({});
+    setErrors((curr) => ({ ...curr, deliveryAddress: undefined }));
   };
 
   const handleBranchChange = (e) => {
     setBranchCode(e.target.value);
-    setErrors({});
+    setErrors((curr) => ({ ...curr, deliveryAddress: undefined }));
+  };
+
+  const handleReceiptChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setReceiptFile(file);
+    setErrors((curr) => ({ ...curr, receiptImage: undefined }));
+  };
+
+  const clearReceipt = () => {
+    setReceiptFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const copyCardNumber = async () => {
+    const digits = (paymentCard.cardNumber || '').replace(/\s+/g, '');
+    try {
+      await navigator.clipboard.writeText(digits);
+      setCopiedCard(true);
+      toast('Karta raqami nusxalandi');
+      setTimeout(() => setCopiedCard(false), 2000);
+    } catch {
+      toast('Karta raqamini qo‘lda nusxalang', 'xato');
+    }
   };
 
   const changeQuantity = async (item, newQuantity) => {
@@ -103,6 +158,11 @@ export default function CartPage() {
       return;
     }
 
+    if (!receiptFile) {
+      setErrors({ receiptImage: "To'lov cheki rasmini yuklang." });
+      return;
+    }
+
     const deliveryAddress = `BTS #${selectedBranch.code} ${selectedBranch.name} — ${selectedRegion.region}, ${selectedDistrict.district} (${selectedBranch.address})`.slice(0, 300);
     const trimmedExtraPhone = additionalPhone.trim();
 
@@ -113,8 +173,9 @@ export default function CartPage() {
       const id = await ordersApi.place({
         deliveryAddress,
         additionalPhone: showAdditionalPhone && trimmedExtraPhone ? trimmedExtraPhone : null,
+        receiptImage: receiptFile,
       });
-      toast(`#${id} buyurtma qabul qilindi`);
+      toast(`#${id} buyurtma qabul qilindi. To'lov cheki admin tomonidan tekshiriladi.`);
       navigate('/myOrders');
     } catch (err) {
       setErrors(fieldErrors(err.detail));
@@ -288,7 +349,7 @@ export default function CartPage() {
             {errors.deliveryAddress && <p className="mt-1 text-xs text-red-400">{errors.deliveryAddress}</p>}
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 border-t border-dark-3 pt-4">
             <div className="flex items-center justify-between gap-3 text-sm">
               <div>
                 <p className="text-gray-500">Telefon raqami</p>
@@ -339,16 +400,93 @@ export default function CartPage() {
             )}
           </div>
 
-          <p className="text-xs text-gray-500">To'lov yetkazib berilganda naqd amalga oshiriladi.</p>
+          <div className="space-y-3 border-t border-dark-3 pt-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase tracking-wider text-gray-400">To'lov (Karta orqali)</span>
+              {paymentCard.cardHolder && (
+                <span className="text-xs text-gray-400">{paymentCard.cardHolder}</span>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-3 rounded-md border border-gold/30 bg-dark px-3.5 py-3">
+              <span className="font-mono text-sm font-medium tracking-wider text-gold sm:text-base">
+                {paymentCard.cardNumber}
+              </span>
+              <button
+                type="button"
+                onClick={copyCardNumber}
+                className="shrink-0 rounded border border-gold/40 px-2.5 py-1 text-xs text-gold transition hover:bg-gold hover:text-dark"
+              >
+                {copiedCard ? 'Nusxalandi ✓' : 'Nusxalash'}
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-400">
+              Yuqoridagi kartaga <span className="text-cream">{formatPrice(cart.totalAmount)}</span> o'tkazib, to'lov cheki (skrinshot) rasmini yuklang.
+            </p>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              onChange={handleReceiptChange}
+              className="hidden"
+            />
+
+            {!receiptFile ? (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex w-full flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-gold/40 bg-dark/60 px-4 py-5 text-center transition hover:border-gold hover:bg-dark"
+              >
+                <span className="text-sm font-medium text-gold">+ To'lov cheki rasmini yuklash</span>
+                <span className="text-xs text-gray-500">JPG, PNG yoki WEBP (maks. 10 MB)</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-3 rounded-md border border-gold/30 bg-dark/70 p-2.5">
+                {receiptPreview && (
+                  <img
+                    src={receiptPreview}
+                    alt="To'lov cheki"
+                    className="h-14 w-14 shrink-0 rounded object-cover ring-1 ring-dark-3"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-medium text-cream">{receiptFile.name}</p>
+                  <p className="mt-0.5 text-[0.7rem] text-gray-500">
+                    {(receiptFile.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                  <div className="mt-1.5 flex gap-3 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-gold underline underline-offset-2"
+                    >
+                      Almashtirish
+                    </button>
+                    <button
+                      type="button"
+                      onClick={clearReceipt}
+                      className="text-red-400 underline underline-offset-2"
+                    >
+                      O'chirish
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {errors.receiptImage && <p className="mt-1 text-xs text-red-400">{errors.receiptImage}</p>}
+          </div>
 
           {notEnough && <p className="text-sm text-red-400">Avval omborda yetarli bo'lmagan mahsulotlar sonini kamaytiring.</p>}
 
           <button
             type="submit"
-            disabled={submitting || notEnough || !user?.phone || !user?.phoneVerified || !selectedBranch}
+            disabled={submitting || notEnough || !user?.phone || !user?.phoneVerified || !selectedBranch || !receiptFile}
             className="store-btn"
           >
-            {submitting ? 'Yuborilmoqda...' : 'Buyurtma berish'}
+            {submitting ? 'Yuborilmoqda...' : 'Buyurtmani rasmiylashtirish'}
           </button>
         </form>
       </div>

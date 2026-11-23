@@ -8,6 +8,7 @@ public class Order
     public string DeliveryAddress { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string? AdditionalPhone { get; set; }
+    public string? ReceiptImageUrl { get; set; }
     public decimal TotalAmount { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.New;
     public DateTime CreatedAt { get; set; }

@@ -102,7 +102,7 @@ export default function ProductPage() {
                   key={r.productImageId}
                   onClick={() => setSelectedImage(r.imageUrl)}
                   className={`h-16 w-16 shrink-0 overflow-hidden ring-1 transition duration-300 sm:h-20 sm:w-20 ${
-                    selectedImage === r.imageUrl ? 'ring-oltin' : 'opacity-60 ring-qora-3 hover:opacity-100'
+                    selectedImage === r.imageUrl ? 'ring-gold' : 'opacity-60 ring-dark-3 hover:opacity-100'
                   }`}
                 >
                   <img src={r.imageUrl} alt="" className="h-full w-full object-cover" />

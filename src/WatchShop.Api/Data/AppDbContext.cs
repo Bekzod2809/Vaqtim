@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<PaymentSetting> PaymentSettings { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)

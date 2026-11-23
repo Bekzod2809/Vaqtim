@@ -74,6 +74,10 @@ namespace WatchShop.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<string>("ReceiptImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -124,6 +128,31 @@ namespace WatchShop.Api.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems", (string)null);
+                });
+
+            modelBuilder.Entity("WatchShop.Api.Entities.PaymentSetting", b =>
+                {
+                    b.Property<long>("PaymentSettingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("PaymentSettingId"));
+
+                    b.Property<string>("CardHolder")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("PaymentSettingId");
+
+                    b.ToTable("PaymentSettings", (string)null);
                 });
 
             modelBuilder.Entity("WatchShop.Api.Entities.PhoneVerification", b =>

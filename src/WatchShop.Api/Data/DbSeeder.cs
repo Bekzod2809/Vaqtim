@@ -114,6 +114,17 @@ public static class DbSeeder
             hasChanges = true;
         }
 
+        if (!db.PaymentSettings.Any())
+        {
+            db.PaymentSettings.Add(new PaymentSetting
+            {
+                CardNumber = "8600 0000 0000 0000",
+                CardHolder = "Vaqtim",
+                UpdatedAt = DateTime.UtcNow
+            });
+            hasChanges = true;
+        }
+
         if (hasChanges)
         {
             db.SaveChanges();

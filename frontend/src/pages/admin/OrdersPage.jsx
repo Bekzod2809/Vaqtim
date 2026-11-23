@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ordersApi } from '../../api/orders';
+import { paymentSettingsApi } from '../../api/paymentSettings';
 import { useToast } from '../../context/ToastContext';
 import { ORDER_STATUS } from '../../constants';
 import { formatPrice, formatDate } from '../../utils';
@@ -7,7 +8,7 @@ import { formatPrice, formatDate } from '../../utils';
 // Har bir holatdan qaysi holatlarga o'tish mumkin (backenddagi qoida bilan bir xil)
 const NEXT_STATUSES = {
   1: [
-    { status: 2, text: 'Tasdiqlash' },
+    { status: 2, text: "Chekni tasdiqlash" },
     { status: 4, text: 'Bekor qilish' },
   ],
   2: [
@@ -16,14 +17,32 @@ const NEXT_STATUSES = {
   ],
 };
 
+function formatCardInput(value) {
+  const digits = (value || '').replace(/\D/g, '').slice(0, 16);
+  return digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+}
+
 export default function OrdersPage() {
   const toast = useToast();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cardForm, setCardForm] = useState({ cardNumber: '', cardHolder: '' });
+  const [savingCard, setSavingCard] = useState(false);
+  const [previewOrder, setPreviewOrder] = useState(null);
 
   const load = async () => {
     try {
-      setOrders(await ordersApi.getAll());
+      const [ordersData, cardData] = await Promise.all([
+        ordersApi.getAll(),
+        paymentSettingsApi.get().catch(() => null),
+      ]);
+      setOrders(ordersData);
+      if (cardData) {
+        setCardForm({
+          cardNumber: formatCardInput(cardData.cardNumber),
+          cardHolder: cardData.cardHolder ?? '',
+        });
+      }
     } catch (err) {
       toast(err.message, 'xato');
     } finally {
@@ -35,6 +54,23 @@ export default function OrdersPage() {
     load();
   }, []);
 
+  const saveCard = async (e) => {
+    e.preventDefault();
+    setSavingCard(true);
+    try {
+      const updated = await paymentSettingsApi.update(cardForm);
+      setCardForm({
+        cardNumber: formatCardInput(updated.cardNumber),
+        cardHolder: updated.cardHolder ?? '',
+      });
+      toast("To'lov kartasi saqlandi");
+    } catch (err) {
+      toast(err.message, 'xato');
+    } finally {
+      setSavingCard(false);
+    }
+  };
+
   const changeStatus = async (order, status) => {
     if (status === 4 && !window.confirm(`#${order.orderId} buyurtma bekor qilinsinmi? Mahsulotlar omborga qaytadi.`)) {
       return;
@@ -43,6 +79,9 @@ export default function OrdersPage() {
     try {
       await ordersApi.changeStatus(order.orderId, status);
       toast(`#${order.orderId}: ${ORDER_STATUS[status].name}`);
+      if (previewOrder?.orderId === order.orderId) {
+        setPreviewOrder(null);
+      }
       load();
     } catch (err) {
       toast(err.message, 'xato');
@@ -51,6 +90,47 @@ export default function OrdersPage() {
 
   return (
     <div>
+      <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-5">
+        <h2 className="text-base font-semibold text-gray-900">To'lov kartasi sozlamalari</h2>
+        <p className="mt-1 text-xs text-gray-500">
+          Savatda xaridorlarga ko'rinadigan karta raqami va karta egasi.
+        </p>
+
+        <form onSubmit={saveCard} className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div>
+            <label className="admin-label">Karta raqami (16 raqam)</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={cardForm.cardNumber}
+              onChange={(e) => setCardForm({ ...cardForm, cardNumber: formatCardInput(e.target.value) })}
+              placeholder="8600 0000 0000 0000"
+              maxLength={19}
+              required
+              className="admin-input font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="admin-label">Karta egasi (ixtiyoriy)</label>
+            <input
+              type="text"
+              value={cardForm.cardHolder}
+              onChange={(e) => setCardForm({ ...cardForm, cardHolder: e.target.value })}
+              placeholder="Ism Familiya"
+              maxLength={100}
+              className="admin-input"
+            />
+          </div>
+
+          <div className="flex items-end">
+            <button type="submit" disabled={savingCard} className="admin-btn w-full sm:w-auto">
+              {savingCard ? 'Saqlanmoqda...' : 'Kartani saqlash'}
+            </button>
+          </div>
+        </form>
+      </div>
+
       <h1 className="mb-6 text-xl font-semibold sm:text-2xl">Buyurtmalar</h1>
 
       {loading && <p className="text-gray-500">Yuklanmoqda...</p>}
@@ -71,7 +151,13 @@ export default function OrdersPage() {
               </div>
 
               <div className="min-w-0 break-words text-sm sm:text-right">
-                <p className="font-medium">
+                {b.customerName && (
+                  <p className="font-semibold text-gray-900">
+                    {b.customerName}
+                    {b.customerUsername && <span className="ml-1 font-normal text-gray-500">(@{b.customerUsername})</span>}
+                  </p>
+                )}
+                <p className="font-medium text-gray-800">
                   {b.phone}
                   {b.additionalPhone && <span className="text-gray-500"> · {b.additionalPhone}</span>}
                 </p>
@@ -90,15 +176,34 @@ export default function OrdersPage() {
               ))}
             </ul>
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="font-semibold">Jami: {formatPrice(b.totalAmount)}</p>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-4">
+                <p className="font-semibold">Jami: {formatPrice(b.totalAmount)}</p>
+
+                {b.receiptImageUrl ? (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewOrder(b)}
+                    className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-800 transition hover:bg-gray-100"
+                  >
+                    <img
+                      src={b.receiptImageUrl}
+                      alt="To'lov cheki"
+                      className="h-7 w-7 rounded object-cover ring-1 ring-gray-200"
+                    />
+                    <span>To'lov chekini ko'rish</span>
+                  </button>
+                ) : (
+                  <span className="text-xs text-gray-400">Chek yuklanmagan</span>
+                )}
+              </div>
 
               <div className="flex w-full gap-2 sm:w-auto">
                 {(NEXT_STATUSES[b.status] ?? []).map((k) => (
                   <button
                     key={k.status}
                     onClick={() => changeStatus(b, k.status)}
-                    className={`flex-1 sm:flex-none ${k.status === 4 ? 'admin-btn-xavfli' : 'admin-btn px-3 py-1.5'}`}
+                    className={`flex-1 sm:flex-none ${k.status === 4 ? 'admin-btn-danger' : 'admin-btn px-3 py-1.5'}`}
                   >
                     {k.text}
                   </button>
@@ -108,6 +213,69 @@ export default function OrdersPage() {
           </div>
         ))}
       </div>
+
+      {previewOrder && (
+        <div
+          onClick={() => setPreviewOrder(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[92vh] w-full max-w-lg overflow-auto rounded-lg bg-white p-4 shadow-xl"
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  #{previewOrder.orderId} — To'lov cheki ({formatPrice(previewOrder.totalAmount)})
+                </h3>
+                <p className="text-xs text-gray-500">
+                  {previewOrder.customerName ? `${previewOrder.customerName} · ` : ''}
+                  {previewOrder.phone}
+                  {previewOrder.additionalPhone ? `, ${previewOrder.additionalPhone}` : ''}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewOrder(null)}
+                className="text-sm text-gray-500 hover:text-gray-900"
+              >
+                Yopish ✕
+              </button>
+            </div>
+
+            <div className="flex justify-center rounded border border-gray-200 bg-gray-50 p-2">
+              <img
+                src={previewOrder.receiptImageUrl}
+                alt="To'lov cheki"
+                className="max-h-[68vh] w-auto rounded object-contain"
+              />
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+              <a
+                href={previewOrder.receiptImageUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-medium text-blue-600 underline"
+              >
+                Rasmni yangi oynada ochish
+              </a>
+
+              <div className="flex gap-2">
+                {(NEXT_STATUSES[previewOrder.status] ?? []).map((k) => (
+                  <button
+                    key={k.status}
+                    onClick={() => changeStatus(previewOrder, k.status)}
+                    className={k.status === 4 ? 'admin-btn-danger' : 'admin-btn px-3 py-1.5'}
+                  >
+                    {k.text}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

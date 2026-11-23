@@ -23,6 +23,13 @@ export function AuthProvider({ children }) {
     return response.user;
   };
 
+  const resetPassword = async (payload) => {
+    const response = await authApi.resetPassword(payload);
+    localStorage.setItem(AUTH_KEY, JSON.stringify(response));
+    setAuth(response);
+    return response.user;
+  };
+
   const logout = () => {
     localStorage.removeItem(AUTH_KEY);
     setAuth(null);
@@ -38,6 +45,7 @@ export function AuthProvider({ children }) {
     user: auth?.user ?? null,
     isAdmin: auth?.user?.role === 2,
     login,
+    resetPassword,
     logout,
     updateUser,
   };

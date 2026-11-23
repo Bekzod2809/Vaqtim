@@ -17,6 +17,7 @@ public class AuthService : IAuthService
     private readonly ITokenService TokenService;
     private readonly IValidator<RegisterDto> RegisterValidator;
     private readonly IValidator<LoginDto> LoginValidator;
+    private readonly IValidator<ResetPasswordDto> ResetPasswordValidator;
     private readonly IPhoneVerificationService PhoneVerificationService;
     private readonly AdminSettings AdminSettings;
 
@@ -25,6 +26,7 @@ public class AuthService : IAuthService
         ITokenService tokenService,
         IValidator<RegisterDto> registerValidator,
         IValidator<LoginDto> loginValidator,
+        IValidator<ResetPasswordDto> resetPasswordValidator,
         IPhoneVerificationService phoneVerificationService,
         AdminSettings adminSettings)
     {
@@ -32,6 +34,7 @@ public class AuthService : IAuthService
         TokenService = tokenService;
         RegisterValidator = registerValidator;
         LoginValidator = loginValidator;
+        ResetPasswordValidator = resetPasswordValidator;
         PhoneVerificationService = phoneVerificationService;
         AdminSettings = adminSettings;
     }
@@ -90,6 +93,35 @@ public class AuthService : IAuthService
         {
             throw new UnauthorizedException("Username yoki parol noto'g'ri.");
         }
+
+        return new LoginResponseDto
+        {
+            Token = TokenService.GetToken(user),
+            User = user.ToGetDto()
+        };
+    }
+
+    public async Task<LoginResponseDto> ResetPasswordAsync(ResetPasswordDto dto)
+    {
+        ResetPasswordValidator.Validate(dto);
+
+        dto.Phone = dto.Phone.Trim();
+
+        var user = await UserRepository.GetAllQuery()
+            .FirstOrDefaultAsync(u => u.Phone == dto.Phone);
+
+        if (user == null)
+        {
+            throw new NotFoundException("Bu telefon raqami bilan ro'yxatdan o'tilgan hisob topilmadi.");
+        }
+
+        await PhoneVerificationService.VerifyAndConsumeAsync(dto.Phone, dto.VerificationCode);
+
+        user.PasswordHash = PasswordHasher.Hash(dto.NewPassword);
+        user.PhoneVerifiedAt ??= DateTime.UtcNow;
+
+        UserRepository.Update(user);
+        await UserRepository.SaveChangesAsync();
 
         return new LoginResponseDto
         {

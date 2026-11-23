@@ -12,26 +12,34 @@ namespace WatchShop.Api.Services;
 
 public class OrderService : IOrderService
 {
+    private static readonly string[] AllowedReceiptExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+    private const long MaxReceiptSize = 10 * 1024 * 1024;
+    private const string ImagesFolder = "images";
+
     private readonly IBaseRepository<Order> OrderRepository;
     private readonly IBaseRepository<CartItem> CartRepository;
     private readonly IBaseRepository<User> UserRepository;
     private readonly IValidator<OrderCreateDto> OrderValidator;
+    private readonly IWebHostEnvironment WebHostEnvironment;
 
     public OrderService(
         IBaseRepository<Order> orderRepository,
         IBaseRepository<CartItem> cartRepository,
         IBaseRepository<User> userRepository,
-        IValidator<OrderCreateDto> orderValidator)
+        IValidator<OrderCreateDto> orderValidator,
+        IWebHostEnvironment webHostEnvironment)
     {
         OrderRepository = orderRepository;
         CartRepository = cartRepository;
         UserRepository = userRepository;
         OrderValidator = orderValidator;
+        WebHostEnvironment = webHostEnvironment;
     }
 
     public async Task<long> CreateAsync(long userId, OrderCreateDto dto)
     {
         OrderValidator.Validate(dto);
+        var receiptExtension = ValidateReceipt(dto.ReceiptImage);
 
         var user = await UserRepository.GetAllQuery()
             .FirstOrDefaultAsync(x => x.UserId == userId);
@@ -68,12 +76,15 @@ public class OrderService : IOrderService
             ? null
             : dto.AdditionalPhone.Trim();
 
+        var receiptFileName = await SaveReceiptFileAsync(dto.ReceiptImage!, receiptExtension);
+
         var order = new Order
         {
             UserId = userId,
             DeliveryAddress = dto.DeliveryAddress,
             Phone = user.Phone,
             AdditionalPhone = additionalPhone,
+            ReceiptImageUrl = $"/{ImagesFolder}/{receiptFileName}",
             Status = OrderStatus.New,
             CreatedAt = DateTime.UtcNow,
             Items = cart.Select(item => new OrderItem
@@ -104,6 +115,7 @@ public class OrderService : IOrderService
     public async Task<List<OrderGetDto>> GetMineAsync(long userId)
     {
         var orders = await OrderRepository.GetAllQuery()
+            .Include(b => b.User)
             .Include(b => b.Items)
             .AsNoTracking()
             .Where(b => b.UserId == userId)
@@ -116,6 +128,7 @@ public class OrderService : IOrderService
     public async Task<List<OrderGetDto>> GetAllAsync()
     {
         var orders = await OrderRepository.GetAllQuery()
+            .Include(b => b.User)
             .Include(b => b.Items)
             .AsNoTracking()
             .OrderByDescending(b => b.CreatedAt)
@@ -198,5 +211,38 @@ public class OrderService : IOrderService
                 bm.Product.StockQuantity += bm.Quantity;
             }
         }
+    }
+
+    private static string ValidateReceipt(IFormFile? receipt)
+    {
+        if (receipt == null || receipt.Length == 0)
+        {
+            throw new BadRequestException("To'lov cheki rasmini yuklang.");
+        }
+
+        if (receipt.Length > MaxReceiptSize)
+        {
+            throw new BadRequestException("Chek rasmi hajmi 10 MB dan oshmasligi kerak.");
+        }
+
+        var extension = Path.GetExtension(receipt.FileName).ToLowerInvariant();
+        if (!AllowedReceiptExtensions.Contains(extension))
+        {
+            throw new BadRequestException("Faqat jpg, jpeg, png va webp formatdagi chek rasmi qabul qilinadi.");
+        }
+
+        return extension;
+    }
+
+    private async Task<string> SaveReceiptFileAsync(IFormFile receipt, string extension)
+    {
+        var folder = Path.Combine(WebHostEnvironment.WebRootPath, ImagesFolder);
+        Directory.CreateDirectory(folder);
+
+        var fileName = $"receipt-{Guid.NewGuid()}{extension}";
+        await using var stream = new FileStream(Path.Combine(folder, fileName), FileMode.Create);
+        await receipt.CopyToAsync(stream);
+
+        return fileName;
     }
 }

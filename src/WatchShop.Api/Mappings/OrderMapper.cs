@@ -11,9 +11,12 @@ public static class OrderMapper
         {
             OrderId = order.OrderId,
             UserId = order.UserId,
+            CustomerName = order.User != null ? $"{order.User.FirstName} {order.User.LastName}".Trim() : string.Empty,
+            CustomerUsername = order.User?.Username ?? string.Empty,
             DeliveryAddress = order.DeliveryAddress,
             Phone = order.Phone,
             AdditionalPhone = order.AdditionalPhone,
+            ReceiptImageUrl = order.ReceiptImageUrl,
             TotalAmount = order.TotalAmount,
             Status = order.Status,
             CreatedAt = order.CreatedAt,

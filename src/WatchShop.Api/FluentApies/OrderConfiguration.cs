@@ -23,6 +23,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(b => b.AdditionalPhone)
             .HasMaxLength(20);
 
+        builder.Property(b => b.ReceiptImageUrl)
+            .HasMaxLength(500);
+
         builder.Property(b => b.TotalAmount)
             .IsRequired()
             .HasPrecision(18, 2);

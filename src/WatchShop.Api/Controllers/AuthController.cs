@@ -36,4 +36,10 @@ public class AuthController : ControllerBase
     {
         return await AuthService.LoginAsync(dto);
     }
+
+    [HttpPost("reset-password")]
+    public async Task<LoginResponseDto> ResetPassword(ResetPasswordDto dto)
+    {
+        return await AuthService.ResetPasswordAsync(dto);
+    }
 }

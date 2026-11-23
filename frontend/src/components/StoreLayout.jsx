@@ -137,7 +137,7 @@ export default function StoreLayout() {
               </div>
             </div>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-gray-500">
-              Soatlar va aksessuarlar. To'lov yetkazib berilganda naqd amalga oshiriladi.
+              Soatlar va aksessuarlar. Karta orqali xavfsiz to'lov va O'zbekiston bo'ylab BTS Express orqali yetkazib berish.
             </p>
           </div>
 
@@ -171,6 +171,43 @@ export default function StoreLayout() {
                 <Link to="/myOrders" className="inline-block py-1 text-gray-400 transition hover:text-cream">
                   Buyurtmalarim
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="https://t.me/bekzodxasanovv"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 py-1 text-gray-400 transition hover:text-gold"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 shrink-0 text-gold">
+                    <path d="M21.94 2.34a1.25 1.25 0 0 0-1.33-.19L2.37 9.5a1.22 1.22 0 0 0-.08 2.24l4.66 1.79 1.82 5.71a1.2 1.2 0 0 0 2.02.45l2.63-2.7 4.77 3.53a1.23 1.23 0 0 0 1.93-.74l2.24-16.1a1.25 1.25 0 0 0-.42-1.34ZM9.18 13.3l8.63-6.43-6.9 7.6-.3 3.13-1.43-4.3Z" />
+                  </svg>
+                  <span>Telegram</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.instagram.com/xasanovbekzod1"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 py-1 text-gray-400 transition hover:text-gold"
+                >
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4 shrink-0 text-gold"
+                  >
+                    <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                    <circle cx="12" cy="12" r="4.2" />
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                  </svg>
+                  <span>Instagram</span>
+                </a>
               </li>
             </ul>
           </div>

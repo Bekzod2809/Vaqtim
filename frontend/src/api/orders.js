@@ -1,9 +1,18 @@
 import client from './client';
 
 export const ordersApi = {
-  // Xaridor uchun
-  place: async (payload) => {
-    const { data } = await client.post('/orders', payload);
+  // Xaridor uchun (multipart/form-data: manzil, ixtiyoriy qo'shimcha raqam va to'lov cheki rasmi)
+  place: async ({ deliveryAddress, additionalPhone, receiptImage }) => {
+    const form = new FormData();
+    form.append('DeliveryAddress', deliveryAddress);
+    if (additionalPhone) {
+      form.append('AdditionalPhone', additionalPhone);
+    }
+    if (receiptImage) {
+      form.append('ReceiptImage', receiptImage);
+    }
+
+    const { data } = await client.post('/orders', form);
     return data; // yangi buyurtma id
   },
 
