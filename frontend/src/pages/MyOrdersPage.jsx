@@ -108,6 +108,7 @@ export default function MyOrdersPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0 break-words text-sm text-gray-500">
                 {b.deliveryAddress} · {b.phone}
+                {b.additionalPhone ? `, ${b.additionalPhone}` : ''}
               </div>
               <div className="flex w-full items-center justify-between gap-5 sm:w-auto sm:justify-end">
                 <span className="font-serif text-xl text-gold sm:text-2xl">{formatPrice(b.totalAmount)}</span>

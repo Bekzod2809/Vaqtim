@@ -64,11 +64,16 @@ public class OrderService : IOrderService
             }
         }
 
+        var additionalPhone = string.IsNullOrWhiteSpace(dto.AdditionalPhone)
+            ? null
+            : dto.AdditionalPhone.Trim();
+
         var order = new Order
         {
             UserId = userId,
             DeliveryAddress = dto.DeliveryAddress,
             Phone = user.Phone,
+            AdditionalPhone = additionalPhone,
             Status = OrderStatus.New,
             CreatedAt = DateTime.UtcNow,
             Items = cart.Select(item => new OrderItem

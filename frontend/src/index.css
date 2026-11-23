@@ -100,6 +100,15 @@
     @apply w-full rounded-md border border-dark-3 bg-dark-2 px-4 py-3 text-base text-cream placeholder-gray-500 transition duration-300 sm:text-sm
       focus:border-gold focus:bg-dark focus:outline-none focus:ring-1 focus:ring-gold/40;
   }
+  .store-select {
+    @apply w-full appearance-none rounded-md border border-dark-3 bg-dark-2 px-4 py-3 pr-10 text-base text-cream transition duration-300 sm:text-sm
+      focus:border-gold focus:bg-dark focus:outline-none focus:ring-1 focus:ring-gold/40
+      disabled:cursor-not-allowed disabled:opacity-45;
+  }
+  .store-select option {
+    background-color: #141311;
+    color: #f5f0e6;
+  }
   /* Katta tugmalarda hover oddiy: faqat rang almashadi */
   .store-btn {
     @apply inline-flex min-h-[3rem] w-full items-center justify-center rounded-md bg-gold px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-dark transition-colors duration-200 sm:px-6 sm:tracking-[0.2em]

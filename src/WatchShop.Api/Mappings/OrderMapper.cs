@@ -13,6 +13,7 @@ public static class OrderMapper
             UserId = order.UserId,
             DeliveryAddress = order.DeliveryAddress,
             Phone = order.Phone,
+            AdditionalPhone = order.AdditionalPhone,
             TotalAmount = order.TotalAmount,
             Status = order.Status,
             CreatedAt = order.CreatedAt,

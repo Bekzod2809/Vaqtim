@@ -6,7 +6,21 @@ import { LogoMark } from '../components/Logo';
 import QuantityPicker from '../components/QuantityPicker';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
+import { BTS_REGIONS } from '../data/btsBranches';
 import { formatPrice, fieldErrors } from '../utils';
+
+function SelectChevron() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      fill="none"
+      className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gold/80"
+    >
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -14,9 +28,19 @@ export default function CartPage() {
   const { user } = useAuth();
 
   const [cart, setCart] = useState(null);
-  const [form, setForm] = useState({ deliveryAddress: '' });
+  const [region, setRegion] = useState('');
+  const [district, setDistrict] = useState('');
+  const [branchCode, setBranchCode] = useState('');
+  const [showAdditionalPhone, setShowAdditionalPhone] = useState(false);
+  const [additionalPhone, setAdditionalPhone] = useState('');
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
+  const selectedRegion = BTS_REGIONS.find((r) => r.region === region);
+  const districts = selectedRegion?.districts ?? [];
+  const selectedDistrict = districts.find((d) => d.district === district);
+  const branches = selectedDistrict?.branches ?? [];
+  const selectedBranch = branches.find((b) => b.code === branchCode);
 
   const load = async () => {
     try {
@@ -29,6 +53,26 @@ export default function CartPage() {
   useEffect(() => {
     load();
   }, []);
+
+  const handleRegionChange = (e) => {
+    setRegion(e.target.value);
+    setDistrict('');
+    setBranchCode('');
+    setErrors({});
+  };
+
+  const handleDistrictChange = (e) => {
+    const nextDistrict = e.target.value;
+    setDistrict(nextDistrict);
+    const nextBranches = districts.find((d) => d.district === nextDistrict)?.branches ?? [];
+    setBranchCode(nextBranches.length === 1 ? nextBranches[0].code : '');
+    setErrors({});
+  };
+
+  const handleBranchChange = (e) => {
+    setBranchCode(e.target.value);
+    setErrors({});
+  };
 
   const changeQuantity = async (item, newQuantity) => {
     if (newQuantity < 1) {
@@ -54,11 +98,22 @@ export default function CartPage() {
 
   const placeOrder = async (e) => {
     e.preventDefault();
+    if (!selectedRegion || !selectedDistrict || !selectedBranch) {
+      setErrors({ deliveryAddress: 'Viloyat, tuman va BTS pochta filialini tanlang.' });
+      return;
+    }
+
+    const deliveryAddress = `BTS #${selectedBranch.code} ${selectedBranch.name} — ${selectedRegion.region}, ${selectedDistrict.district} (${selectedBranch.address})`.slice(0, 300);
+    const trimmedExtraPhone = additionalPhone.trim();
+
     setErrors({});
     setSubmitting(true);
 
     try {
-      const id = await ordersApi.place({ deliveryAddress: form.deliveryAddress });
+      const id = await ordersApi.place({
+        deliveryAddress,
+        additionalPhone: showAdditionalPhone && trimmedExtraPhone ? trimmedExtraPhone : null,
+      });
       toast(`#${id} buyurtma qabul qilindi`);
       navigate('/myOrders');
     } catch (err) {
@@ -153,32 +208,146 @@ export default function CartPage() {
             <span className="font-serif text-2xl text-gold sm:text-3xl">{formatPrice(cart.totalAmount)}</span>
           </div>
 
-          <div>
-            <textarea
-              value={form.deliveryAddress}
-              onChange={(e) => setForm({ ...form, deliveryAddress: e.target.value })}
-              placeholder="Yetkazish manzili"
-              rows={3}
-              className="store-input"
-            />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase tracking-wider text-gray-400">Yetkazish manzili (BTS pochta)</span>
+            </div>
+
+            <div className="relative">
+              <select
+                aria-label="Viloyat yoki hudud"
+                value={region}
+                onChange={handleRegionChange}
+                required
+                className={`store-select ${region ? 'text-cream' : 'text-gray-500'}`}
+              >
+                <option value="">Viloyat / hududni tanlang</option>
+                {BTS_REGIONS.map((r) => (
+                  <option key={r.region} value={r.region}>
+                    {r.region}
+                  </option>
+                ))}
+              </select>
+              <SelectChevron />
+            </div>
+
+            <div className="relative">
+              <select
+                aria-label="Tuman yoki shahar"
+                value={district}
+                onChange={handleDistrictChange}
+                disabled={!region}
+                required
+                className={`store-select ${district ? 'text-cream' : 'text-gray-500'}`}
+              >
+                <option value="">{region ? 'Tuman yoki shaharni tanlang' : 'Avval viloyatni tanlang'}</option>
+                {districts.map((d) => (
+                  <option key={d.district} value={d.district}>
+                    {d.district} ({d.branches.length} ta filial)
+                  </option>
+                ))}
+              </select>
+              <SelectChevron />
+            </div>
+
+            <div className="relative">
+              <select
+                aria-label="BTS pochta filiali"
+                value={branchCode}
+                onChange={handleBranchChange}
+                disabled={!district}
+                required
+                className={`store-select ${branchCode ? 'text-cream' : 'text-gray-500'}`}
+              >
+                <option value="">{district ? 'BTS pochta filialini tanlang' : 'Avval tumanni tanlang'}</option>
+                {branches.map((b) => (
+                  <option key={b.code} value={b.code}>
+                    #{b.code} — {b.name} ({b.landmark || b.address})
+                  </option>
+                ))}
+              </select>
+              <SelectChevron />
+            </div>
+
+            {selectedBranch && (
+              <div className="rounded-md border border-gold/25 bg-dark/60 px-3.5 py-2.5 text-xs leading-relaxed">
+                <p className="font-medium text-gold">
+                  BTS #{selectedBranch.code} — {selectedBranch.name}
+                </p>
+                <p className="mt-0.5 text-gray-300">{selectedBranch.address}</p>
+                {selectedBranch.landmark && (
+                  <p className="mt-0.5 text-gray-500">Mo'ljal: {selectedBranch.landmark}</p>
+                )}
+              </div>
+            )}
+
+            <p className="text-xs text-gold/85">
+              Mahsulot BTS Express pochta filiali orqali yetkazib beriladi.
+            </p>
+
             {errors.deliveryAddress && <p className="mt-1 text-xs text-red-400">{errors.deliveryAddress}</p>}
           </div>
 
-          <div className="flex items-center justify-between gap-3 text-sm">
-            <div>
-              <p className="text-gray-500">Telefon raqami</p>
-              <p className="mt-1 text-cream">{user?.phone || 'Hali kiritilmagan'}</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <div>
+                <p className="text-gray-500">Telefon raqami</p>
+                <p className="mt-1 text-cream">{user?.phone || 'Hali kiritilmagan'}</p>
+              </div>
+              {user?.phone ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (showAdditionalPhone) {
+                      setShowAdditionalPhone(false);
+                      setAdditionalPhone('');
+                      setErrors((curr) => ({ ...curr, additionalPhone: undefined }));
+                    } else {
+                      setShowAdditionalPhone(true);
+                    }
+                  }}
+                  className="shrink-0 text-gold underline underline-offset-4 transition hover:text-gold-light"
+                >
+                  {showAdditionalPhone ? 'Olib tashlash' : "+ Qo'shimcha raqam"}
+                </button>
+              ) : (
+                <Link to="/profile" className="shrink-0 text-gold underline underline-offset-4">
+                  Raqam kiritish
+                </Link>
+              )}
             </div>
-            <Link to="/profile" className="shrink-0 text-gold underline underline-offset-4">
-              {user?.phone ? "O'zgartirish" : 'Raqam kiritish'}
-            </Link>
+
+            {showAdditionalPhone && (
+              <div>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  value={additionalPhone}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9+]/g, '').slice(0, 13);
+                    setAdditionalPhone(val);
+                    setErrors((curr) => ({ ...curr, additionalPhone: undefined }));
+                  }}
+                  placeholder="Qo'shimcha raqam (+998901234567)"
+                  pattern="\+998[0-9]{9}"
+                  maxLength={13}
+                  title="Raqam +998901234567 ko'rinishida bo'lsin (ixtiyoriy)."
+                  className="store-input"
+                />
+                {errors.additionalPhone && <p className="mt-1 text-xs text-red-400">{errors.additionalPhone}</p>}
+              </div>
+            )}
           </div>
 
           <p className="text-xs text-gray-500">To'lov yetkazib berilganda naqd amalga oshiriladi.</p>
 
           {notEnough && <p className="text-sm text-red-400">Avval omborda yetarli bo'lmagan mahsulotlar sonini kamaytiring.</p>}
 
-          <button type="submit" disabled={submitting || notEnough || !user?.phone || !user?.phoneVerified} className="store-btn">
+          <button
+            type="submit"
+            disabled={submitting || notEnough || !user?.phone || !user?.phoneVerified || !selectedBranch}
+            className="store-btn"
+          >
             {submitting ? 'Yuborilmoqda...' : 'Buyurtma berish'}
           </button>
         </form>

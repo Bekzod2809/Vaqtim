@@ -8,6 +8,7 @@ public class OrderGetDto
     public long UserId { get; set; }
     public string DeliveryAddress { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
+    public string? AdditionalPhone { get; set; }
     public decimal TotalAmount { get; set; }
     public OrderStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }

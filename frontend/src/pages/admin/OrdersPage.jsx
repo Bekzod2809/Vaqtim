@@ -71,7 +71,10 @@ export default function OrdersPage() {
               </div>
 
               <div className="min-w-0 break-words text-sm sm:text-right">
-                <p className="font-medium">{b.phone}</p>
+                <p className="font-medium">
+                  {b.phone}
+                  {b.additionalPhone && <span className="text-gray-500"> · {b.additionalPhone}</span>}
+                </p>
                 <p className="text-gray-500">{b.deliveryAddress}</p>
               </div>
             </div>
