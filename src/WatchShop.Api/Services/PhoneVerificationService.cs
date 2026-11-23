@@ -115,7 +115,12 @@ public class PhoneVerificationService : IPhoneVerificationService
 
     private static string NormalizePhone(string phone)
     {
-        var normalized = (phone ?? string.Empty).Trim();
+        var normalized = Regex.Replace(phone ?? string.Empty, @"[\s\-\(\)]+", string.Empty);
+        if (Regex.IsMatch(normalized, @"^998\d{9}$"))
+        {
+            normalized = "+" + normalized;
+        }
+
         if (!Regex.IsMatch(normalized, @"^\+998\d{9}$"))
         {
             throw new BadRequestException("Telefon raqami +998901234567 formatida bo'lishi kerak.");

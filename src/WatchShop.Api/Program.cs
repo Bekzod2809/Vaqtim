@@ -15,6 +15,10 @@ builder.Services.AddControllers();
 var telegramSettings = builder.Configuration.GetSection("Telegram").Get<TelegramSettings>() ?? new TelegramSettings();
 builder.Services.AddSingleton(telegramSettings);
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("Telegram", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(40);
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -60,6 +64,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<ProductWriteDtoValidator>();
+builder.Services.AddSingleton<ITelegramBotService, TelegramBotService>();
 builder.Services.AddHostedService<TelegramBotHostedService>();
 
 var app = builder.Build();
