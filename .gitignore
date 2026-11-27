@@ -75,3 +75,5 @@ deliverables/
 
 # Yuklangan to'lov cheklari git'ga kirmasin
 src/WatchShop.Api/wwwroot/images/receipt-*
+
+.playwright-mcp/
