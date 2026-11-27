@@ -86,27 +86,33 @@ public class OrderService : IOrderService
             AdditionalPhone = additionalPhone,
             ReceiptImageUrl = $"/{ImagesFolder}/{receiptFileName}",
             Status = OrderStatus.New,
-            CreatedAt = DateTime.UtcNow,
-            Items = cart.Select(item => new OrderItem
-            {
-                ProductId = item.ProductId,
-                ProductName = item.Product.Name,
-                Price = item.Product.CurrentPrice,
-                Quantity = item.Quantity
-            }).ToList()
+            CreatedAt = DateTime.UtcNow
         };
 
-        order.TotalAmount = order.Items.Sum(bm => bm.Price * bm.Quantity);
+        decimal totalAmount = 0;
 
         foreach (var item in cart)
         {
+            decimal price = item.Product.CurrentPrice;
+
+            order.Items.Add(new OrderItem
+            {
+                ProductId = item.ProductId,
+                ProductName = item.Product.Name,
+                Price = price,
+                Quantity = item.Quantity
+            });
+
+            totalAmount += price * item.Quantity;
+
             item.Product.StockQuantity -= item.Quantity;
             CartRepository.Delete(item);
         }
 
+        order.TotalAmount = totalAmount;
+
         await OrderRepository.AddAsync(order);
 
-        // Barcha repository bitta DbContext'ni ishlatadi: buyurtma, ombor va savat bitta tranzaksiyada saqlanadi
         await OrderRepository.SaveChangesAsync();
 
         return order.OrderId;
@@ -117,12 +123,18 @@ public class OrderService : IOrderService
         var orders = await OrderRepository.GetAllQuery()
             .Include(b => b.User)
             .Include(b => b.Items)
-            .AsNoTracking()
+                .ThenInclude(i => i.Product!.Images)
             .Where(b => b.UserId == userId)
             .OrderByDescending(b => b.CreatedAt)
             .ToListAsync();
 
-        return orders.Select(b => b.ToGetDto()).ToList();
+        var result = new List<OrderGetDto>();
+        foreach (var order in orders)
+        {
+            result.Add(order.ToGetDto());
+        }
+
+        return result;
     }
 
     public async Task<List<OrderGetDto>> GetAllAsync()
@@ -130,11 +142,17 @@ public class OrderService : IOrderService
         var orders = await OrderRepository.GetAllQuery()
             .Include(b => b.User)
             .Include(b => b.Items)
-            .AsNoTracking()
+                .ThenInclude(i => i.Product!.Images)
             .OrderByDescending(b => b.CreatedAt)
             .ToListAsync();
 
-        return orders.Select(b => b.ToGetDto()).ToList();
+        var result = new List<OrderGetDto>();
+        foreach (var order in orders)
+        {
+            result.Add(order.ToGetDto());
+        }
+
+        return result;
     }
 
     public async Task CancelAsync(long userId, long orderId)

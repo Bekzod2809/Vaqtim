@@ -95,15 +95,33 @@ export default function MyOrdersPage() {
               </div>
             )}
 
-            <ul className="my-5 space-y-2 border-y border-dark-3 py-4 text-sm sm:my-6 sm:py-5">
-              {b.items.map((m, j) => (
-                <li key={j} className="flex justify-between gap-4 text-gray-300">
-                  <span>
-                    {m.productName} <span className="text-gray-500">× {m.quantity}</span>
-                  </span>
-                  <span className="whitespace-nowrap">{formatPrice(m.amount)}</span>
-                </li>
-              ))}
+            <ul className="my-5 space-y-3 border-y border-dark-3 py-4 text-sm sm:my-6 sm:py-5">
+              {b.items.map((m, j) => {
+                const content = (
+                  <>
+                    {m.mainImageUrl && (
+                      <img src={m.mainImageUrl} alt={m.productName} className="h-12 w-12 shrink-0 bg-dark object-cover ring-1 ring-dark-3" />
+                    )}
+                    <span>
+                      <span className={m.productId ? 'transition group-hover:text-gold' : ''}>{m.productName}</span>{' '}
+                      <span className="text-gray-500">× {m.quantity}</span>
+                    </span>
+                  </>
+                );
+
+                return (
+                  <li key={j} className="flex items-center justify-between gap-4 text-gray-300">
+                    {m.productId ? (
+                      <Link to={`/product/${m.productId}`} className="group flex items-center gap-3">
+                        {content}
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-3">{content}</div>
+                    )}
+                    <span className="whitespace-nowrap">{formatPrice(m.amount)}</span>
+                  </li>
+                );
+              })}
             </ul>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

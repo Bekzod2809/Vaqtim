@@ -5,32 +5,31 @@ namespace WatchShop.Api.Mappings;
 
 public static class CartMapper
 {
-    public static CartItemGetDto ToGetDto(this CartItem item)
+    public static CartItemGetDto ToGetDto(CartItem item, decimal price)
     {
-        var mainImage = item.Product.Images.FirstOrDefault(r => r.IsMainImage)
-            ?? item.Product.Images.FirstOrDefault();
+        string? mainImage = null;
+        foreach (var img in item.Product.Images)
+        {
+            if (mainImage == null || img.IsMainImage)
+            {
+                mainImage = img.ImageUrl;
+                if (img.IsMainImage)
+                {
+                    break;
+                }
+            }
+        }
 
         return new CartItemGetDto
         {
             CartItemId = item.CartItemId,
             ProductId = item.ProductId,
             Name = item.Product.Name,
-            Price = item.Product.CurrentPrice,
+            Price = price,
             Quantity = item.Quantity,
-            Amount = item.Product.CurrentPrice * item.Quantity,
+            Amount = price * item.Quantity,
             HasEnoughStock = item.Quantity <= item.Product.StockQuantity,
-            MainImageUrl = mainImage?.ImageUrl
-        };
-    }
-
-    public static CartGetDto ToCartDto(this List<CartItem> qatorlar)
-    {
-        var products = qatorlar.Select(q => q.ToGetDto()).ToList();
-
-        return new CartGetDto
-        {
-            Products = products,
-            TotalAmount = products.Sum(m => m.Amount)
+            MainImageUrl = mainImage
         };
     }
 }

@@ -7,6 +7,37 @@ public static class OrderMapper
 {
     public static OrderGetDto ToGetDto(this Order order)
     {
+        var items = new List<OrderItemGetDto>();
+
+        foreach (var bm in order.Items)
+        {
+            string? mainImage = null;
+            if (bm.Product != null)
+            {
+                foreach (var img in bm.Product.Images)
+                {
+                    if (mainImage == null || img.IsMainImage)
+                    {
+                        mainImage = img.ImageUrl;
+                        if (img.IsMainImage)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            items.Add(new OrderItemGetDto
+            {
+                ProductId = bm.ProductId,
+                ProductName = bm.ProductName,
+                MainImageUrl = mainImage,
+                Price = bm.Price,
+                Quantity = bm.Quantity,
+                Amount = bm.Price * bm.Quantity
+            });
+        }
+
         return new OrderGetDto
         {
             OrderId = order.OrderId,
@@ -20,14 +51,7 @@ public static class OrderMapper
             TotalAmount = order.TotalAmount,
             Status = order.Status,
             CreatedAt = order.CreatedAt,
-            Items = order.Items.Select(bm => new OrderItemGetDto
-            {
-                ProductId = bm.ProductId,
-                ProductName = bm.ProductName,
-                Price = bm.Price,
-                Quantity = bm.Quantity,
-                Amount = bm.Price * bm.Quantity
-            }).ToList()
+            Items = items
         };
     }
 }

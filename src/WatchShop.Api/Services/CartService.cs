@@ -30,14 +30,26 @@ public class CartService : ICartService
 
     public async Task<CartGetDto> GetAsync(long userId)
     {
-        var qatorlar = await CartRepository.GetAllQuery()
-            .Include(s => s.Product)
-                .ThenInclude(m => m.Images)
-            .AsNoTracking()
-            .Where(s => s.UserId == userId)
+        var items = await CartRepository.GetAllQuery()
+            .Include(x => x.Product.Images)
+            .Where(x => x.UserId == userId)
             .ToListAsync();
 
-        return qatorlar.ToCartDto();
+        var cart = new CartGetDto();
+        decimal totalAmount = 0;
+
+        foreach (var item in items)
+        {
+            decimal price = item.Product.CurrentPrice;
+
+            var dto = CartMapper.ToGetDto(item, price);
+            cart.Products.Add(dto);
+
+            totalAmount += dto.Amount;
+        }
+
+        cart.TotalAmount = totalAmount;
+        return cart;
     }
 
     public async Task AddAsync(long userId, AddToCartDto dto)

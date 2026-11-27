@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ordersApi } from '../../api/orders';
 import { paymentSettingsApi } from '../../api/paymentSettings';
 import { useToast } from '../../context/ToastContext';
@@ -167,10 +168,21 @@ export default function OrdersPage() {
 
             <ul className="my-4 divide-y divide-gray-100 border-y border-gray-100 text-sm">
               {b.items.map((m, i) => (
-                <li key={i} className="flex justify-between gap-3 py-2">
-                  <span>
-                    {m.productName} <span className="text-gray-500">× {m.quantity}</span>
-                  </span>
+                <li key={i} className="flex items-center justify-between gap-3 py-2.5">
+                  <div className="flex items-center gap-3">
+                    {m.mainImageUrl && (
+                      <img src={m.mainImageUrl} alt={m.productName} className="h-10 w-10 shrink-0 rounded border border-gray-200 object-cover" />
+                    )}
+                    {m.productId ? (
+                      <Link to={`/product/${m.productId}`} className="font-medium text-gray-900 hover:underline">
+                        {m.productName} <span className="font-normal text-gray-500">× {m.quantity}</span>
+                      </Link>
+                    ) : (
+                      <span>
+                        {m.productName} <span className="text-gray-500">× {m.quantity}</span>
+                      </span>
+                    )}
+                  </div>
                   <span className="whitespace-nowrap">{formatPrice(m.amount)}</span>
                 </li>
               ))}
